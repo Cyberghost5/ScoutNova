@@ -1,0 +1,159 @@
+<?php
+include 'include/session.php';
+$flutterwave_secret_key = $settings['flutterwave_secret_key'];
+
+if($_GET['action'] == 'cancel'){
+  $conn = $pdo->open();
+
+  $stmt = $conn->prepare("SELECT * FROM subscriptions WHERE user_email = ? AND status = 'active' LIMIT 1");
+  $stmt->execute([$user['email']]);
+  $subscription = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  if($subscription){
+      // Cancel the payment plan via Flutterwave API
+      $curl = curl_init();
+      curl_setopt_array($curl, [
+          CURLOPT_URL => "https://api.flutterwave.com/v3/subscriptions/".$subscription['subscription_id']."/cancel",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_CUSTOMREQUEST => "PUT",
+          CURLOPT_HTTPHEADER => [
+              "Authorization: Bearer $flutterwave_secret_key",
+              "Content-Type: application/json",
+              "accept: application/json"
+          ],
+      ]);
+      $response = curl_exec($curl);
+      curl_close($curl);
+
+      var_dump($response);
+      
+      // Log the API response
+      $stmt = $conn->prepare("
+          INSERT INTO api_responses (user_id, response, service)
+          VALUES (?, ?, ?)
+      ");
+      $stmt->execute([$user['id'], $response, 'Flutterwave Subscription Cancellation']);
+
+      $result = json_decode($response, true);
+
+      if($result['status'] != 'success'){
+          $_SESSION['error'] = 'Failed to cancel subscription via payment gateway. '.$result['message'];
+          header('location: subscriptions');
+          exit;
+      }
+      
+      // Cancel the subscription
+      $stmt = $conn->prepare("UPDATE subscriptions SET status = 'cancelled' WHERE id = ?");
+      $stmt->execute([$subscription['id']]);
+
+      // Update the users table to remove subscription info
+      $stmt = $conn->prepare("UPDATE users SET subscription_plan_id = 1 WHERE email = ?");
+      $stmt->execute([$user['email']]);
+
+      $_SESSION['success'] = 'Subscription cancelled successfully.';
+      header('location: subscriptions');
+      exit;
+  }else{
+      $_SESSION['error'] = 'No active subscription found.';
+      header('location: subscriptions');
+      exit;
+  }
+
+}else{
+  $plan_id = $_POST['plan_id'];
+
+  $conn = $pdo->open();
+
+  $stmt = $conn->prepare("SELECT * FROM plans WHERE id = :id");
+  $stmt->execute(['id' => $plan_id]);
+  $plan = $stmt->fetch();
+
+  if(!$plan){
+      $_SESSION['error'] = 'Selected plan not found.';
+      header('location: subscriptions');
+      exit;
+  }
+
+  // Make sure the role user is subscribing to a plan meant for their role
+  if($plan['role'] != 'all' && $plan['role'] != $user['role']){
+      $_SESSION['error'] = 'You cannot subscribe to this plan.';
+      header('location: subscriptions');
+      exit;
+  }
+
+  // Check if user already has active subscription
+  $stmt = $conn->prepare("SELECT * FROM subscriptions WHERE user_email = ? AND status = '1' LIMIT 1");
+  $stmt->execute([$user['email']]);
+  $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  if ($existing) {
+      $_SESSION['cancelled'] = 'You already have an active subscription plan.';
+      header('location: subscriptions');
+      exit;
+  }
+
+  $pdo->close();
+
+  $curl = curl_init();
+
+  $data = [
+    "tx_ref" => "SNOVA-" . uniqid(),
+    "amount" => $plan['amount'],
+    "currency" => $plan['currency'],
+    "redirect_url" => $settings['site_url']."user/subscription-callback",
+    "customer" => [
+      "email" => $user['email'],
+      "name" => $user['firstname']. " " .$user['lastname'],
+      "phone" => $user['contact_info']
+    ],
+    "meta" => [
+      "payment_plan" => $plan['plan_id'],
+      "payment_plan_id" => $plan['id'],
+      "price" => $plan['amount'],
+      "user_id" => $user['id']
+    ],
+    "customizations" => [
+      "title" => $settings['site_name']. " ".$plan['name']." Subscription",
+      "description" => $settings['site_name']. " ".$plan['name']." Subscription",
+      "logo" => $settings['site_url']."assets/images/".$settings['favicon']
+    ],
+    "payment_plan" => $plan['plan_id']
+  ];
+
+  curl_setopt_array($curl, [
+    CURLOPT_URL => "https://api.flutterwave.com/v3/payments",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_CUSTOMREQUEST => "POST",
+    CURLOPT_POSTFIELDS => json_encode($data),
+    CURLOPT_HTTPHEADER => [
+      "Authorization: Bearer $flutterwave_secret_key",
+      "Content-Type: application/json"
+    ],
+  ]);
+
+  $response = curl_exec($curl);
+  $err = curl_error($curl);
+  curl_close($curl);
+
+  $stmt = $conn->prepare("
+      INSERT INTO api_responses (user_id, response, service)
+      VALUES (?, ?, ?)
+  ");
+  $stmt->execute([$user['id'], $response, 'Flutterwave Payment Initialization']);
+
+  if ($err) {
+    echo "cURL Error #: " . $err;
+  } else {
+    $result = json_decode($response, true);
+
+    if($result['status'] != 'success'){
+      $_SESSION['error'] = 'Payment initialization failed. Please try again.';
+      header('location: subscriptions');
+      exit;
+    }
+    header("Location: " . $result['data']['link']); // redirect to Flutterwave checkout page
+    exit;
+  }
+}
+
+?>
