@@ -120,7 +120,7 @@ if (!$user_agent) {
           </div>
           
           <div class="row">
-            <div class="col-md-3 grid-margin stretch-card">
+            <div class="col-md-4 grid-margin stretch-card">
               <div class="card tale-bg">
                 <div class="card-body box-profile">
                   <div class="text-center">
@@ -152,7 +152,7 @@ if (!$user_agent) {
                 </div>
               </div>
             </div>
-            <div class="col-md-9 grid-margin transparent">
+            <div class="col-md-8 grid-margin transparent">
               <div class="demo-tabs">
 
                 <div data-pws-tab="user_profile" data-pws-tab-name="User Profile">

@@ -48,3 +48,21 @@
 <script src="<?php echo $settings['site_url']; ?>js/typeahead.js"></script>
 <script src="<?php echo $settings['site_url']; ?>js/select2.js"></script>
 <!-- End custom js for this page-->
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="uploadingModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <h5>Uploading...</h5>
+      <p>Your video is being processed.</p>
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function() {
+  var modal = new bootstrap.Modal(document.getElementById('uploadingModal'));
+  modal.show();
+});
+</script>

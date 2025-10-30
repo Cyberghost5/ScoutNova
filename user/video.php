@@ -84,7 +84,14 @@ $user_player = $stmt->fetch();
                 }
                 if ($user_player['role'] == 'user') {
                     $user_playertype = '<span class="badge badge-info">Player</span>';
-                }              
+                }   
+                
+                // Display thumbnail from Cloudinary if available
+                if(!empty($video['thumbnail_url'])){
+                  $thumbnail = $video['thumbnail_url'];
+                } else {
+                  $thumbnail = $settings['site_url'] . 'assets/images/favicon.png'; // default thumbnail
+                }
                 
                 // var_dump($player);
               ?>
@@ -108,7 +115,7 @@ $user_player = $stmt->fetch();
                   <p>Video: <br> 
                   <div id="video-gallery" class="row lightGallery text-center">
                     <a class="image-tile col-xl-3 col-lg-3 col-md-3 col-md-4 col-6g glightbox" data-gallery="videos" data-title="<?php echo $video['description']; ?>, Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?>" href="<?php echo $video['file_url']; ?>">
-                      <img src="<?php echo $settings['site_url']; ?>assets/images/favicon.png" alt="image" />
+                      <img src="<?php echo $thumbnail; ?>" alt="image" />
                       <div class="demo-gallery-poster">
                         <img src="../assets/images/lightbox/play-button.png" alt="image">
                       </div>

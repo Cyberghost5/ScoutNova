@@ -119,12 +119,20 @@ if($user['profile_set'] == 0){
                                 $video_analysis = '<div class="badge badge-danger">Rejected</div>';
                                 $video_analysis2 = 'Rejected';
                               }
+
+                              // Display thumbnail from Cloudinary if available
+                              if(!empty($video['thumbnail_url'])){
+                                  $thumbnail = $video['thumbnail_url'];
+                              } else {
+                                  $thumbnail = $settings['site_url'] . 'assets/images/favicon.png'; // default thumbnail
+                              }
+
                               ?>
                               <tr>
                                 <td class="py-1 ps-0">
                                   <div class="d-flex align-items-center">
                                     <a class="image-tile col-xl-3 col-lg-3 col-md-3 col-md-4 col-6g glightbox" data-gallery="videos" data-title="<?php echo $video['description']; ?>, Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?>, Analysis Status:</b> <?php echo $video_analysis2; ?>" href="<?php echo $video['file_url']; ?>">
-                                      <img src="<?php echo $settings['site_url']; ?>assets/images/favicon.png" alt="image" />
+                                      <img src="<?php echo $thumbnail; ?>" alt="image" />
                                     </a>
                                     <p><?php echo $video['video_id']; ?></p>
                                   </div>

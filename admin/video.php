@@ -6,9 +6,9 @@ $stmt->execute(['id'=>$video_id]);
 $video = $stmt->fetch();
 
 if (!$video) {
-    $_SESSION['error'] = 'Video not found.';
-    header('location: videos');
-    exit();
+  $_SESSION['error'] = 'Video not found.';
+  header('location: videos');
+  exit();
 }
 
 $stmt = $conn->prepare("SELECT * FROM players WHERE user_id=:id");
@@ -406,8 +406,8 @@ $user = $stmt->fetch();
   <script>
 
   document.getElementById("aiBtn").addEventListener("click", function() {
-    var methodModal = document.getElementById('methodModal');
-    methodModal.hide();
+    // var methodModal = document.getElementById('methodModal');
+    // methodModal.hide();
 
     // Example: Send to AI endpoint
     fetch('submit_to_ai.php', {
@@ -417,7 +417,7 @@ $user = $stmt->fetch();
     })
     .then(res => res.json())
     .then(data => alert(data.message))
-    .catch(err => alert('Error connecting to AI service.'));
+    .catch(err => alert('Error connecting to AI service, use manual method or try again later.'));
   });
   </script>
   

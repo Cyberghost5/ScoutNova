@@ -45,15 +45,15 @@
                     INSERT INTO api_responses (user_id, response, service)
                     VALUES (?, ?, ?)
                 ");
-                $stmt->execute([$user['id'], $uploadResult, 'Cloudinary Video Upload']);
+                $stmt->execute([$user['id'], json_encode($uploadResult), 'Cloudinary Video Upload']);
                 
                 // Log success message
                 // $message = date('Y-m-d H:i:s') . " ✅ Upload Success: " . json_encode($uploadResult) . PHP_EOL;
                 // file_put_contents($logFile, $message, FILE_APPEND);
 
                 $videoUrl = $uploadResult['secure_url'];
-                $thumbnailUrl = $uploadResult['public_id'] ?? null;
                 $public_id = $uploadResult['public_id'] ?? null;
+                $thumbnailUrl = $uploadResult['public_id'] ?? "https://res.cloudinary.com/$cloudinary_cloud_name/video/upload/so_3,w_300,h_200,c_fill/$public_id.jpg";
 
             } elseif ($upload_type === 'local') {
                 // LOCAL UPLOAD
