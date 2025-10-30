@@ -50,9 +50,9 @@ $user = $stmt->fetch();
           <div class="row">
             <div class="col-md-12 grid-margin">
               <div class="row">
-                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                   <h3 class="font-weight-bold">Video <?php echo $video['video_id']; ?></h3>
-                  <h6 class="font-weight-normal mb-0"><?php echo $video['description']; ?>.</h6>
+                  <h6 class="font-weight-normal mb-0"><?php echo $video['description']; ?></h6>
                 </div>
               </div>
             </div>
@@ -81,11 +81,11 @@ $user = $stmt->fetch();
 
                 $public_status = '';
                 if($video['public_status'] == 0){
-                  $public_status = '<div class="badge badge-warning">No</div> <i class="icon mdi mdi-pencil"></i>';
+                  $public_status = '<div class="badge badge-warning">No</div>';
                 }elseif($video['public_status'] == 1){
-                  $public_status = '<div class="badge badge-success">Yes</div> <i class="icon mdi mdi-pencil"></i>';
+                  $public_status = '<div class="badge badge-success">Yes</div>';
                 }elseif($video['public_status'] == 2){
-                  $public_status = '<div class="badge badge-danger">Rejected</div> <i class="icon mdi mdi-pencil"></i>';
+                  $public_status = '<div class="badge badge-danger">Rejected</div>';
                 }
 
                 if($video['thumbnail_url'] == null || $video['thumbnail_url'] == ''){
@@ -109,7 +109,15 @@ $user = $stmt->fetch();
                   
                   <p>Video Description: <br> <?php echo $video['description']; ?></p><br>
 
-                  <p>Public Status: <br> <?php echo $public_status; ?></p><br>
+                  <p>Public Status: <br> <?php echo $public_status; ?>
+                  <div class="dropdown d-inline-block">
+                    <a href="#" class="text-secondary" data-toggle="dropdown"><i class="mdi mdi-pencil"></i></a>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="update_video_status?id=<?= $video['id'] ?>&status=1">Public</a>
+                      <a class="dropdown-item" href="update_video_status?id=<?= $video['id'] ?>&status=0">Private</a>
+                    </div>
+                  </div>
+                  </p><br>
 
                   <p>Full Link: <br> <?php echo $video['full_link']; ?></p><br>
 
