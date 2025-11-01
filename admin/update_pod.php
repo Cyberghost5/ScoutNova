@@ -22,7 +22,7 @@ try {
     $total_score = array_sum($breakdown) / count($breakdown);
 
     // ✅ Check if this video already has a rating
-    $stmt = $conn->prepare("SELECT * FROM PODRatings WHERE player_id = ? AND video_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM podratings WHERE player_id = ? AND video_id = ?");
     $stmt->execute([$player_id, $video_id]);
     $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -38,7 +38,7 @@ try {
         $consistency_index = 100 - min(100, sqrt($variance) * 10);
 
         $update = $conn->prepare("
-            UPDATE PODRatings 
+            UPDATE podratings 
             SET total_score=?, consistency_index=?, rating_breakdown=?, category=?, ai_confidence=?, source=?, historical_data=?, updated_at=NOW()
             WHERE id=?
         ");
@@ -56,7 +56,7 @@ try {
         // Insert new record
         $history = [date('Y-m-d H:i:s') => $total_score];
         $insert = $conn->prepare("
-            INSERT INTO PODRatings 
+            INSERT INTO podratings 
             (player_id, video_id, total_score, video_count, consistency_index, rating_breakdown, category, ai_confidence, source, historical_data, created_at, updated_at)
             VALUES (?, ?, ?, 1, 100, ?, ?, ?, ?, ?, NOW(), NOW())
         ");
@@ -78,7 +78,7 @@ try {
             AVG(total_score) AS avg_score, 
             AVG(consistency_index) AS avg_consistency, 
             COUNT(*) AS total_videos 
-        FROM PODRatings 
+        FROM podratings 
         WHERE player_id = ?
     ");
     $stats->execute([$player_id]);
@@ -86,7 +86,7 @@ try {
 
     // Compute best skill overall
     $skills = ['stamina' => 0, 'passing' => 0, 'speed' => 0, 'agility' => 0];
-    $skillQuery = $conn->prepare("SELECT rating_breakdown FROM PODRatings WHERE player_id = ?");
+    $skillQuery = $conn->prepare("SELECT rating_breakdown FROM podratings WHERE player_id = ?");
     $skillQuery->execute([$player_id]);
 
     while ($row = $skillQuery->fetch(PDO::FETCH_ASSOC)) {

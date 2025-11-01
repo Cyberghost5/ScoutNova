@@ -140,7 +140,7 @@ if($user['profile_set'] == 0){
                         </tbody>
                       </table>
                     <?php else: ?>
-                      <li class="list-group-item text-muted">No players added to your watchlist yet.</li>
+                      <li class="list-group-item text-muted text-center">No players added to your watchlist yet.</li>
                     <?php endif; ?>
                   </div>
                 </div>

@@ -40,8 +40,15 @@ switch ($eventType) {
         $subscription_id = $event['data']['subscription_id'] ?? null;
         $interval = strtolower($event['data']['plan_object']['interval'] ?? 'monthly');
 
+        $stmt = $conn->prepare("SELECT * FROM plans WHERE plan_id = ?");
+        $stmt->execute([$plan_id]);
+        $plan = $stmt->fetch();
+
+        $plan_name = $plan['name'];
+        $plan_interval = lcfirst($plan['intervals']);
+
         // Compute next payment date based on interval
-        switch ($interval) {
+        switch ($plan_interval) {
             case 'hourly':
                 $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 hour'));
                 break;
@@ -50,6 +57,9 @@ switch ($eventType) {
                 break;
             case 'weekly':
                 $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 week'));
+                break;
+            case 'monthly':
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 month'));
                 break;
             case 'quarterly':
                 $next_payment_date = date('Y-m-d H:i:s', strtotime('+3 months'));
@@ -71,24 +81,74 @@ switch ($eventType) {
 
             // Insert or update the subscription record
             $stmt = $conn->prepare("
-                INSERT INTO subscriptions (user_id, customer_email, plan_id, subscription_id, status, next_payment_date, updated_at)
-                VALUES (?, ?, ?, ?, 'active', ?, NOW())
+                INSERT INTO subscriptions (user_id, user_email, plan_id, plan_name, subscription_id, status, next_payment_date, updated_at)
+                VALUES (?, ?, ?, ?, ?, 'active', ?, NOW())
                 ON DUPLICATE KEY UPDATE
                     status='active',
                     next_payment_date=VALUES(next_payment_date),
                     updated_at=NOW()
             ");
-            $stmt->execute([$user_id, $customer_email, $plan_id, $subscription_id, $next_payment_date]);
+            $stmt->execute([$user_id, $customer_email, $plan_id, $plan_name, $subscription_id, $next_payment_date]);
 
             // ✅ Update user table: mark as subscribed
-            $stmt = $conn->prepare("UPDATE users SET is_subscribed = 1, subscription_expires_at = ? WHERE id = ?");
-            $stmt->execute([$next_payment_date, $user_id]);
+            $stmt = $conn->prepare("UPDATE users SET subscription_status = 'active', subscription_plan_id = ? WHERE id = ?");
+            $stmt->execute([$plan_id, $user_id]);
+
+            // Update players table if user is a player
+            $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
+            $stmt->execute([$plan_id, $user_id]);
         }
 
         break;
 
     case 'subscription.cancelled':
+        // ❌ Cancelled, expired or failed renewal
+        $subscription_id = $event['data']['id'] ?? null;
+
+        // Update subscription record
+        $stmt = $conn->prepare("UPDATE subscriptions SET status = 'cancelled', updated_at = NOW() WHERE subscription_id = ?");
+        $stmt->execute([$subscription_id]);
+
+        // Fetch the user for this subscription
+        $stmt = $conn->prepare("SELECT user_id FROM subscriptions WHERE subscription_id = ? LIMIT 1");
+        $stmt->execute([$subscription_id]);
+        $sub = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($sub && !empty($sub['user_id'])) {
+            // ❌ Update user table: mark as unsubscribed
+            $stmt = $conn->prepare("UPDATE users SET subscription_status = 'cancelled', subscription_plan_id = NULL WHERE id = ?");
+            $stmt->execute([$sub['user_id']]);
+
+            // Update players table if user is a player
+            $stmt = $conn->prepare("UPDATE players SET subscription_status = 'cancelled', subscription_plan_id = NULL, featured = 0 WHERE user_id = ?");
+            $stmt->execute([$sub['user_id']]);
+        }
+
+        break;
     case 'subscription.expired':
+        // ❌ Cancelled, expired or failed renewal
+        $subscription_id = $event['data']['id'] ?? null;
+
+        // Update subscription record
+        $stmt = $conn->prepare("UPDATE subscriptions SET status = 'expired', updated_at = NOW() WHERE subscription_id = ?");
+        $stmt->execute([$subscription_id]);
+
+        // Fetch the user for this subscription
+        $stmt = $conn->prepare("SELECT user_id FROM subscriptions WHERE subscription_id = ? LIMIT 1");
+        $stmt->execute([$subscription_id]);
+        $sub = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($sub && !empty($sub['user_id'])) {
+            // ❌ Update user table: mark as unsubscribed
+            $stmt = $conn->prepare("UPDATE users SET subscription_status = 'expired', subscription_plan_id = NULL WHERE id = ?");
+            $stmt->execute([$sub['user_id']]);
+
+            // Update players table if user is a player
+            $stmt = $conn->prepare("UPDATE players SET subscription_status = 'expired', subscription_plan_id = NULL, featured = 0 WHERE user_id = ?");
+            $stmt->execute([$sub['user_id']]);
+        }
+
+        break;
     case 'subscription.not_renewed':
         // ❌ Cancelled, expired or failed renewal
         $subscription_id = $event['data']['id'] ?? null;
@@ -104,7 +164,11 @@ switch ($eventType) {
 
         if ($sub && !empty($sub['user_id'])) {
             // ❌ Update user table: mark as unsubscribed
-            $stmt = $conn->prepare("UPDATE users SET is_subscribed = 0 WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE users SET subscription_status = 'inactive', subscription_plan_id = NULL WHERE id = ?");
+            $stmt->execute([$sub['user_id']]);
+
+            // Update players table if user is a player
+            $stmt = $conn->prepare("UPDATE players SET subscription_status = 'inactive', subscription_plan_id = NULL WHERE user_id = ?");
             $stmt->execute([$sub['user_id']]);
         }
 

@@ -20,6 +20,12 @@ $result = $conn->prepare($query);
 $result->execute([$chat_id]);
 $row = $result->fetch(PDO::FETCH_ASSOC);
 
+if (!$row) {
+  $_SESSION['error'] = 'Somethong is wrong!';
+  header('location: messages');
+  exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,4 +1,4 @@
-<?php include 'include/session.php'; ?>
+<?php include 'include/session.php';?>
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'includes/head.php'; 
@@ -97,6 +97,9 @@ if($user['profile_set'] == 0){
                                   Analysis Status
                                 </th>
                                 <th class="pt-1">
+                                  Public Status
+                                </th>
+                                <th class="pt-1">
                                   Action
                                 </th>
                               </tr>
@@ -120,6 +123,15 @@ if($user['profile_set'] == 0){
                                 $video_analysis2 = 'Rejected';
                               }
 
+                              $public_status = '';
+                              if($video['public_status'] == 0){
+                                $public_status = '<div class="badge badge-warning">No</div>';
+                              }elseif($video['public_status'] == 1){
+                                $public_status = '<div class="badge badge-success">Yes</div>';
+                              }elseif($video['public_status'] == 2){
+                                $public_status = '<div class="badge badge-danger">Rejected</div>';
+                              }  
+
                               // Display thumbnail from Cloudinary if available
                               if(!empty($video['thumbnail_url'])){
                                   $thumbnail = $video['thumbnail_url'];
@@ -138,7 +150,7 @@ if($user['profile_set'] == 0){
                                   </div>
                                 </td>
                                 <td class="py-1 ps-0">
-                                  <p class="mb-0"><a href="player?id=<?php echo $player['id']; ?>"><?php echo $player['firstname'] . ' ' . $player['lastname']; ?></a></p>
+                                  <p class="mb-0"><?php echo $player['firstname'] . ' ' . $player['lastname']; ?></p>
                                   <p class="mb-0 text-muted text-small">
                                     <?php if (!empty($video['created_at'])): ?>
                                       <?= date("M j, g:i a", strtotime($video['created_at'])) ?>
@@ -147,6 +159,9 @@ if($user['profile_set'] == 0){
                                 </td>
                                 <td>
                                   <?php echo $video_analysis; ?>
+                                </td>
+                                <td>
+                                  <?php echo $public_status; ?>
                                 </td>
                                 <td>
                                   <a class="btn btn-sm btn-outline-success" href="video?id=<?= $video['id'] ?>"><i class="mdi mdi-eye"></i> View</a>

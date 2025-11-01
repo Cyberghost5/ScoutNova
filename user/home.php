@@ -249,7 +249,7 @@ if($user['profile_set'] == 0){
                       
                       ?>
                       <a class="image-tile col-xl-3 col-lg-3 col-md-3 col-md-4 col-6g glightbox" data-gallery="videos" data-title="<?php echo $video['description']; ?>, Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?>, Analysis Status:</b> <?php echo $video_analysis; ?>" href="<?php echo $video['file_url']; ?>">
-                        <img src="<?php echo $thumbnail; ?>" alt="image" />
+                        <img src="<?php echo $thumbnail; ?>" class="img-fluid" height="100px" alt="image" />
                         <div class="demo-gallery-poster">
                           <img src="../assets/images/lightbox/play-button.png" alt="image">
                         </div>
@@ -534,7 +534,7 @@ if($user['profile_set'] == 0){
                     </div>
                     <?php endforeach; ?>
                     <?php else: ?>
-                      <li class="list-group-item text-muted w-100 p-3">No players found.</li>
+                      <li class="list-group-item text-muted w-100 p-3 m-3 text-center">No players found.</li>
                     <?php endif; ?>
                     
                   </div>
@@ -600,7 +600,7 @@ if($user['profile_set'] == 0){
                         </tbody>
                       </table>
                     <?php else: ?>
-                      <li class="list-group-item text-muted">No chats yet.</li>
+                      <li class="list-group-item text-muted p-3 text-center">No chats yet.</li>
                     <?php endif; ?>
                   </div>
                 </div>

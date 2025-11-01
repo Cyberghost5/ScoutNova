@@ -184,7 +184,12 @@ if($user['profile_set'] == 0){
                     <div class="col-md-4 mb-3">
                       <div class="card mt-3 p-3 player-card">
                         <img src="<?php echo (!empty($player['profile_image'])) ? 'images/'.$player['profile_image'] : 'images/profile.jpg'; ?>" style="width: 100px;" class="img-fluid rounded mb-2" alt="">
-                        <h6 class="fw-bold mb-0"><?php echo $player_user['firstname']; ?> <?php echo $player_user['lastname']; ?></h6>
+                        <h6 class="fw-bold mb-0"><?php echo $player_user['firstname']; ?> <?php echo $player_user['lastname']; ?> 
+                        <?php
+                        if ($user['subscription_status'] == 'active'): ?>
+                        <sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> 
+                        <?php endif; ?>
+                        </h6>
                         <small class="text-muted"><?php echo trim($roles[0]); ?> • <?php echo $player['country']; ?> • Age <?php echo (new DateTime())->diff(new DateTime(($player['dob'])))->y; ?></small>
                         <hr>
                         <p class="mb-1"><b>POD Score:</b> <?= $player['pod_score'] ?: 'N/A' ?></p>

@@ -43,6 +43,13 @@
     </li>
 
     <li class="nav-item">
+      <a class="nav-link" href="verifications">
+        <i class="mdi mdi-account-check menu-icon"></i>
+        <span class="menu-title">Verification</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
       <a class="nav-link" href="messages">
         <i class="mdi mdi-message-text-outline menu-icon"></i>
         <span class="menu-title">Messages</span>
@@ -65,7 +72,7 @@
 
     <li class="nav-item">
       <a class="nav-link" href="processing">
-        <i class="mdi mdi-fingerprint menu-icon"></i>
+        <i class="mdi mdi-memory menu-icon"></i>
         <span class="menu-title">AI Processing</span>
       </a>
     </li>

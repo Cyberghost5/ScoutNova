@@ -21,6 +21,12 @@ if (!isset($_SESSION["viewed_player_$increase_view_count"])) {
 $stmt = $conn->prepare("SELECT * FROM users WHERE id=:userid");
 $stmt->execute(['userid'=>$player['user_id']]);
 $user_player = $stmt->fetch();
+
+if (!$user_player) {
+  $_SESSION['error'] = 'User not found.';
+  header('location: videos');
+  exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,13 +34,13 @@ $user_player = $stmt->fetch();
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    .playerpod .container { max-width: 1100px; margin: 40px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); }
-    .playerpod h2 { text-align: center; color: #1e3a8a; margin-bottom: 10px; }
+    .playerpod .container { background: white; padding: 10px; border-radius: 16px; }
+    .playerpod h2 { text-align: center; color: #9f04c8; margin-bottom: 10px; }
     .playerpod h4 { text-align: center; color: #64748b; margin-top: 0; }
     .playerpod .stats { display: flex; justify-content: space-around; margin: 30px 0; }
-    .playerpod .card { background: #f1f5f9; padding: 20px; border-radius: 12px; width: 30%; text-align: center; }
+    .playerpod .card { background: #f1f5f9; padding: 10px; border-radius: 12px; width: 30%; text-align: center; }
     .playerpod .card h3 { margin: 0; font-size: 1.1rem; }
-    .playerpod .card p { font-size: 2rem; margin-top: 8px; font-weight: bold; color: #2563eb; }
+    .playerpod .card p { font-size: 1.3rem; margin-top: 8px; font-weight: bold; color: #9f04c8; }
     .playerpod .chart-container { margin: 40px 0; }
 </style>
 <body class="sidebar-dark">
@@ -180,7 +186,7 @@ $user_player = $stmt->fetch();
                   
                   <?php if (count($ratings) > 0): ?>
                   <div class="container">
-                    <h2>🏆 Player Performance Dashboard</h2>
+                    <h2>Player Performance Dashboard</h2>
                     <h4>Player ID: <?php echo $player_id; ?></h4>
 
                     <div class="stats">

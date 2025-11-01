@@ -25,7 +25,7 @@ if($user['profile_set'] == 0){
               <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                   <h3 class="font-weight-bold">Subscription</h3>
-                  <h6 class="font-weight-normal mb-0">This page is coming soon.</h6>
+                  <h6 class="font-weight-normal mb-0">Pay for subscription here.</h6>
                 </div>
               </div>
             </div>
@@ -71,7 +71,7 @@ if($user['profile_set'] == 0){
                 <div class="card-body">
                   <div class="container text-center pt-5">
                     <h4 class="mb-3 mt-5">Start up your football/basketball career today</h4>
-                    <p class="w-75 mx-auto mb-5">Choose a plan that suits you the best. If you are not fully satisfied,
+                    <p class="w-75 mx-auto mb-3">Choose a plan that suits you the best. If you are not fully satisfied,
                       we offer 30-day money-back guarantee no questions asked!!</p>
 
                     <?php
@@ -85,62 +85,105 @@ if($user['profile_set'] == 0){
                     
                     if(!$active_subscription):
                     ?>
+
+                    <div class="d-flex justify-content-center align-items-center mb-4">
+                      <label class="mr-2 font-weight-bold">Monthly</label>
+                      <label class="switch mb-0">
+                        <input type="checkbox" id="intervalToggle">
+                        <span class="slider round"></span>
+                      </label>
+                      <label class="ml-2 font-weight-bold">Yearly</label>
+                    </div>
+
+                    <style>
+                    /* Toggle switch styling */
+                    .switch {
+                      position: relative;
+                      display: inline-block;
+                      width: 60px;
+                      height: 30px;
+                    }
+                    .switch input {display:none;}
+                    .slider {
+                      position: absolute;
+                      cursor: pointer;
+                      top: 0; left: 0; right: 0; bottom: 0;
+                      background-color: #ccc;
+                      transition: .4s;
+                      border-radius: 30px;
+                    }
+                    .slider:before {
+                      position: absolute;
+                      content: "";
+                      height: 22px; width: 22px;
+                      left: 4px; bottom: 4px;
+                      background-color: white;
+                      transition: .4s;
+                      border-radius: 50%;
+                    }
+                    input:checked + .slider {
+                      background-color: #9f04c8;
+                    }
+                    input:checked + .slider:before {
+                      transform: translateX(30px);
+                    }
+                    </style>
                     
                     <div class="row pricing-table">
                       <?php
                       $conn = $pdo->open();
-
-                      $stmt = $conn->prepare("SELECT * FROM plans WHERE role=:role OR role = 'all' AND status = 1 ORDER BY id ASC");
+                      
+                      $stmt = $conn->prepare("SELECT * FROM plans WHERE (role=:role OR role='all') AND status=1 ORDER BY id ASC");
                       $stmt->execute(['role' => $user['role']]);
                       $plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
                       $i = 0;
                       ?>
-                      <?php foreach($plans as $plan):
-                        $i++; 
-                      ?>
-                      <div class="col-md-6 col-xl-6 grid-margin stretch-card pricing-card">
-                        <div class="card border-primary border pricing-card-body">
-                          <div class="text-center pricing-card-head">
-                            <h3><?php echo $plan['name']; ?></h3>
-                            <p><?php echo $plan['intervals']; ?></p>
-                            <h1 class="font-weight-normal mb-4"> <?php echo $plan['currency_short']; ?><?php echo number_format($plan['amount'], 2); ?></h1>
-                          </div>
-                          <ul class="list-unstyled plan-features">
-                            <li><?php echo $plan['details']; ?></li>
-                          </ul>
-                          <div class="wrapper">
-                            <?php if($user['subscription_plan_id'] == $plan['plan_id'] || $user['subscription_plan_id'] == $plan['id']): ?>
-                            <a href="#" class="btn btn-outline-primary active btn-block">Subscribed</a>
-                            <?php else: ?>
-                            <a href="#" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#methodModal<?php echo $i; ?>">Upgrade</a>
-                            <?php endif; ?>
+                      <?php foreach($plans as $plan): $i++; ?>
+                        <div class="col-md-4 col-xl-4 grid-margin stretch-card pricing-card plan-card"
+                            data-interval="<?php echo strtolower($plan['intervals']); ?>">
+                          <div class="card border-primary border pricing-card-body">
+                            <div class="text-center pricing-card-head">
+                              <h3><?php echo $plan['name']; ?></h3>
+                              <p><?php echo ucfirst($plan['intervals']); ?></p>
+                              <h2 class="font-weight-normal mb-4">
+                                <?php echo $plan['currency_short']; ?><?php echo number_format($plan['amount'], 2); ?>
+                              </h2>
+                            </div>
+                            <ul class="list-unstyled plan-features">
+                              <li><?php echo $plan['details']; ?></li>
+                            </ul>
+                            <div class="wrapper">
+                              <?php if($user['subscription_plan_id'] == $plan['plan_id'] || $user['subscription_plan_id'] == $plan['id']): ?>
+                                <a href="#" class="btn btn-outline-primary active btn-block">Subscribed</a>
+                              <?php else: ?>
+                                <a href="#" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#methodModal<?php echo $i; ?>">Upgrade</a>
+                              <?php endif; ?>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div class="modal fade" id="methodModal<?php echo $i; ?>" tabindex="-1" aria-labelledby="methodModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                          <div class="modal-content">
-                            <div class="modal-header bg-light">
-                              <h5 class="modal-title" id="methodModalLabel"><?php echo $plan['name']; ?></h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            </div>
-                            <div class="modal-body text-center">
-                              <p>You are about to upgrade your subscription to the <?php echo $plan['name']; ?> plan and you will be charged <?php echo $plan['currency_short']; ?><?php echo number_format($plan['amount'], 2); ?> at a <?php echo $plan['intervals']; ?> basis.</p>
-                              <p>By upgrading to a <?php echo $settings['site_name']; ?> plan, you agree to the <?php echo $settings['site_name']; ?> Terms of Service and the Offer Terms and Conditions. Note: The <?php echo $settings['site_name']; ?> Privacy Policy describes how data is handled in this service.</p>
-                              <div class="d-flex justify-content-center gap-3 mt-4">
-                                <form action="subscription" method="POST">
-                                  <input type="hidden" name="plan_id" value="<?php echo $plan['id']; ?>">
-                                  <button type="submit" class="btn btn-outline-success mr-3">Agree</button>
-                                </form>
-                                <button id="rejectBtn" data-dismiss="modal" class="btn btn-outline-danger mr-3">Cancel</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="methodModal<?php echo $i; ?>" tabindex="-1" aria-labelledby="methodModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header bg-light">
+                                <h5 class="modal-title" id="methodModalLabel"><?php echo $plan['name']; ?></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              </div>
+                              <div class="modal-body text-center">
+                                <p>You are about to upgrade your subscription to the <strong><?php echo $plan['name']; ?></strong> plan and you will be charged <strong><?php echo $plan['currency_short']; ?><?php echo number_format($plan['amount'], 2); ?></strong> on a <strong><?php echo $plan['intervals']; ?></strong> basis.</p>
+                                <p>By upgrading, you agree to the <?php echo $settings['site_name']; ?> Terms of Service and Privacy Policy.</p>
+                                <div class="d-flex justify-content-center gap-3 mt-4">
+                                  <form action="subscription" method="POST">
+                                    <input type="hidden" name="plan_id" value="<?php echo $plan['id']; ?>">
+                                    <button type="submit" class="btn btn-outline-success mr-3">Agree</button>
+                                  </form>
+                                  <button data-dismiss="modal" class="btn btn-outline-danger mr-3">Cancel</button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-
                       <?php endforeach; ?>
                       
                     </div>
@@ -171,6 +214,22 @@ if($user['profile_set'] == 0){
   </div>
   <!-- container-scroller -->
   <?php include 'includes/scripts.php'; ?>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById('intervalToggle');
+    const plans = document.querySelectorAll('.plan-card');
+
+    // Default to Monthly
+    plans.forEach(p => p.style.display = p.dataset.interval === 'monthly' ? 'block' : 'none');
+
+    toggle.addEventListener('change', function() {
+      const showInterval = toggle.checked ? 'yearly' : 'monthly';
+      plans.forEach(plan => {
+        plan.style.display = plan.dataset.interval === showInterval ? 'block' : 'none';
+      });
+    });
+  });
+  </script>
 </body>
 
 </html>

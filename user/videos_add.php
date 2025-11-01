@@ -18,7 +18,7 @@
 
 		$conn = $pdo->open();
 
-            $upload_type = 'cloudinary';
+            $upload_type = 'local';
 
             $videoUrl = null; // will store the final video path or URL
 
@@ -38,6 +38,7 @@
                 $logFile = __DIR__ . '/cloudinary_log.txt'; // path to your log file
 
                 $uploadResult = $cloudinary->uploadApi()->upload($fileTmpPath, [
+                    // 'folder' => "scoutnova/users/videos",
                     'resource_type' => 'video'
                 ]);
 
@@ -57,7 +58,7 @@
 
             } elseif ($upload_type === 'local') {
                 // LOCAL UPLOAD
-                $targetDir = "videos/";
+                $targetDir = "upload/videos/";
                 $thumbnailUrl = null;
                 $public_id = null;
                 if (!file_exists($targetDir)) {
@@ -69,7 +70,7 @@
 
                 if (move_uploaded_file($_FILES['video']['tmp_name'], $targetFilePath)) {
                     // Save relative path for easy access
-                    $videoUrl = "videos/" . $fileName;
+                    $videoUrl = $settings['site_url']."user/upload/videos/" . $fileName;
                 } else {
                     // die("<div style='color:red;'>Error uploading file locally.</div>");
                     $_SESSION['error'] = 'Error uploading file locally.';

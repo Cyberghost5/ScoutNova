@@ -6,18 +6,31 @@ $stmt->execute(['id'=>$video_id]);
 $video = $stmt->fetch();
 
 if (!$video) {
-    $_SESSION['error'] = 'Video not found.';
-    header('location: videos');
-    exit();
+  $_SESSION['error'] = 'Video not found.';
+  header('location: videos');
+  exit();
 }
 
 $stmt = $conn->prepare("SELECT * FROM players WHERE user_id=:id");
 $stmt->execute(['id'=>$video['player_id']]);
 $player = $stmt->fetch();
 
+if (!$player) {
+  $_SESSION['error'] = 'Player not found.';
+  header('location: videos');
+  exit();
+}
+
 $stmt = $conn->prepare("SELECT * FROM users WHERE id=:id");
 $stmt->execute(['id'=>$player['user_id']]);
 $user_player = $stmt->fetch();
+
+if (!$user_player) {
+  $_SESSION['error'] = 'User not found.';
+  header('location: videos');
+  exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,12 +39,12 @@ $user_player = $stmt->fetch();
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   .playerpod .container { max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-  .playerpod h2 { text-align: center; margin-bottom: 20px; color: #1e40af; }
+  .playerpod h2 { text-align: center; margin-bottom: 20px; color: #9f04c8; }
   .playerpod .chart-container { width: 100%; height: 350px; margin-top: 30px; }
   .playerpod .stats { display: flex; justify-content: space-around; margin-top: 20px; }
   .playerpod .stat-box { background: #f1f5f9; border-radius: 12px; padding: 20px; width: 45%; text-align: center; }
   .playerpod .stat-box h3 { margin: 0; font-size: 1.2rem; color: #1e293b; }
-  .playerpod .stat-box p { font-size: 2rem; margin-top: 8px; font-weight: bold; color: #2563eb; }
+  .playerpod .stat-box p { font-size: 2rem; margin-top: 8px; font-weight: bold; color: #9f04c8; }
 </style>
 <body class="sidebar-dark">
   <div class="container-scroller">
@@ -84,7 +97,16 @@ $user_player = $stmt->fetch();
                 }
                 if ($user_player['role'] == 'user') {
                     $user_playertype = '<span class="badge badge-info">Player</span>';
-                }   
+                } 
+
+                $public_status = '';
+                if($video['public_status'] == 0){
+                  $public_status = '<div class="badge badge-warning">No</div>';
+                }elseif($video['public_status'] == 1){
+                  $public_status = '<div class="badge badge-success">Yes</div>';
+                }elseif($video['public_status'] == 2){
+                  $public_status = '<div class="badge badge-danger">Rejected</div>';
+                }  
                 
                 // Display thumbnail from Cloudinary if available
                 if(!empty($video['thumbnail_url'])){
@@ -110,7 +132,9 @@ $user_player = $stmt->fetch();
                   
                   <p>Video Description: <br> <?php echo $video['description']; ?></p><br>
 
-                  <p>Full Link: <br> <?php echo $video['full_link']; ?></p><br>
+                  <p>Public Status: <br> <?php echo $public_status; ?></p><br>
+
+                  <p>Full Link: <br> <?php echo $video['full_link']; ?> <a href="<?php echo $video['full_link']; ?>" target="_blank" class="btn btn-xs btn-primary"><i class="mdi mdi-eye"></i> View</a> </p><br>
 
                   <p>Video: <br> 
                   <div id="video-gallery" class="row lightGallery text-center">
@@ -123,7 +147,7 @@ $user_player = $stmt->fetch();
                   </div>
                   </p>
                   
-                  <small class="text-muted">Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?></small>
+                  <small class="text-muted">Uploaded: <?php echo date('d, M Y - h:i a', strtotime($video['created_at'])); ?></small>
                 
                   <hr>
 
@@ -135,7 +159,7 @@ $user_player = $stmt->fetch();
                     $stmt = $conn->prepare("
                         SELECT v.*, r.total_score, r.consistency_index, r.rating_breakdown, r.category
                         FROM videos v
-                        LEFT JOIN PODRatings r ON v.id = r.video_id
+                        LEFT JOIN podratings r ON v.id = r.video_id
                         WHERE v.id = ?
                     ");
                     $stmt->execute([$video_id]);
@@ -145,7 +169,7 @@ $user_player = $stmt->fetch();
                     ?> 
                     
                     <div class="container">
-                      <h2>🎥 Video Analysis</h2>
+                      <h2>Video Analysis</h2>
                       <p><strong>Category:</strong> <?php echo htmlspecialchars($video['category']); ?></p>
                       <p><strong>Uploaded:</strong> <?php echo date('M d, Y', strtotime($video['created_at'])); ?></p>
   

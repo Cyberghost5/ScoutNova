@@ -9,13 +9,13 @@ if($user['profile_set'] == 0){
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    .playerpod .container { max-width: 1100px; margin: 40px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); }
-    .playerpod h2 { text-align: center; color: #1e3a8a; margin-bottom: 10px; }
+    .playerpod .container { background: white; padding: 10px; border-radius: 16px; }
+    .playerpod h2 { text-align: center; color: #9f04c8; margin-bottom: 10px; }
     .playerpod h4 { text-align: center; color: #64748b; margin-top: 0; }
     .playerpod .stats { display: flex; justify-content: space-around; margin: 30px 0; }
-    .playerpod .card { background: #f1f5f9; padding: 20px; border-radius: 12px; width: 30%; text-align: center; }
+    .playerpod .card { background: #f1f5f9; padding: 10px; border-radius: 12px; width: 30%; text-align: center; }
     .playerpod .card h3 { margin: 0; font-size: 1.1rem; }
-    .playerpod .card p { font-size: 2rem; margin-top: 8px; font-weight: bold; color: #2563eb; }
+    .playerpod .card p { font-size: 1.3rem; margin-top: 8px; font-weight: bold; color: #9f04c8; }
     .playerpod .chart-container { margin: 40px 0; }
 </style>
 <body class="sidebar-dark">
@@ -63,10 +63,10 @@ if($user['profile_set'] == 0){
                   ";
                   unset($_SESSION['success']);
                 }
-                if ($user['verification'] == 1) {
+                if ($user['verified'] == 1) {
                     $kyc = '<span class="badge badge-success">Passed</span>';
                 }
-                if ($user['verification'] == 0) {
+                if ($user['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
                 if ($user['role'] == 'agent') {
@@ -91,7 +91,12 @@ if($user['profile_set'] == 0){
                     <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo (!empty($player['profile_image'])) ? 'images/'.$player['profile_image'] : 'images/profile.jpg'; ?>" alt="User profile picture">
                   </div>
 
-                  <h3 class="profile-username text-center"><?php echo $user['username'];?><sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> </h3>
+                  <h3 class="profile-username text-center"><?php echo $user['username'];?>
+                  <?php
+                  if ($user['subscription_status'] == 'active'): ?>
+                  <sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> 
+                  <?php endif; ?>
+                  </h3>
 
                   <p class="text-muted text-center"><?php echo $user['firstname'].' '.$user['lastname']; ?></p>
 
@@ -129,14 +134,14 @@ if($user['profile_set'] == 0){
               <div data-pws-tab="pod" data-pws-tab-name="POD" class="playerpod">
                   <?php
                   // Player stats
-                  $statsStmt = $conn->prepare("SELECT * FROM PlayerStats WHERE player_id = ?");
+                  $statsStmt = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");
                   $statsStmt->execute([$player['id']]);
                   $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
 
                   // All video ratings
                   $ratingsStmt = $conn->prepare("
                       SELECT v.description, r.total_score, r.consistency_index, r.rating_breakdown, r.created_at
-                      FROM PODRatings r
+                      FROM podratings r
                       JOIN videos v ON v.id = r.video_id
                       WHERE r.player_id = ?
                       ORDER BY r.created_at ASC
@@ -166,7 +171,7 @@ if($user['profile_set'] == 0){
                   <?php 
                   if (count($ratings) > 0): ?>
                   <div class="container">
-                    <h2>🏆 Player Performance Dashboard</h2>
+                    <h2>Player Performance Dashboard</h2>
                     <h4>Player ID: <?php echo $player['id']; ?></h4>
 
                     <div class="stats">

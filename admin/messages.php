@@ -34,21 +34,21 @@ $sql = "
           ) AS m ON m.chat_id = c.id
           ";
 
-if ($admin['role'] !== 'admin') {
-	$sql .= " WHERE (c.user1_id = ? OR c.user2_id = ?)";
-}
+          if ($admin['role'] !== 'admin') {
+            $sql .= " WHERE (c.user1_id = ? OR c.user2_id = ?)";
+          }
 
-$sql .= " ORDER BY m.timestamp DESC";
+          $sql .= " ORDER BY m.timestamp DESC";
 
-$stmt = $conn->prepare($sql);
+          $stmt = $conn->prepare($sql);
 
-if ($admin['role'] === 'admin') {
-	$stmt->execute([$logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id]);
-} else {
-	$stmt->execute([$logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id]);
-}
+          if ($admin['role'] === 'admin') {
+            $stmt->execute([$logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id]);
+          } else {
+            $stmt->execute([$logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id, $logged_in_user_id]);
+          }
 
-$chats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          $chats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         ?> 
 <body class="sidebar-dark">
@@ -152,7 +152,7 @@ $chats = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </tbody>
                       </table>
                     <?php else: ?>
-                      <li class="list-group-item text-muted">No chats yet.</li>
+                      <li class="list-group-item text-muted w-100 text-center">No chats yet.</li>
                     <?php endif; ?>
                   </div>
                 </div>

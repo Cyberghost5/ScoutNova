@@ -92,7 +92,7 @@ if (isset($_GET['status'])) {
                         $plan = $stmt->fetch();
 
                         $plan_name = $plan['name'];
-                        $plan_interval = $plan['intervals'];
+                        $plan_interval = lcfirst($plan['intervals']);
 
                         switch (strtolower($plan_interval)){
                             case 'hourly':
@@ -133,6 +133,14 @@ if (isset($_GET['status'])) {
                         UPDATE users
                         SET subscription_status = 'active', subscription_plan_id = ?
                         WHERE id = ?
+                    ");
+                    $stmt->execute([$plan_id, $user_id]);
+
+                    // Update players table if user is a player
+                    $stmt = $conn->prepare("
+                        UPDATE players
+                        SET subscription_status = 'active', subscription_plan_id = ?, featured = 1
+                        WHERE user_id = ?
                     ");
                     $stmt->execute([$plan_id, $user_id]);
 

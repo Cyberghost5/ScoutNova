@@ -37,7 +37,7 @@
             <i class="ti-settings text-primary"></i>
              Settings
           </a>
-          <?php if($user['verification'] == 0 || $user['verification'] == 2 || $user['verification'] == 3): ?>
+          <?php if($user['verified'] == 0 || $user['verified'] == 2 || $user['verified'] == 3): ?>
           <!-- <a class="dropdown-item" href="kyc">
             <i class="mdi mdi-check-decagram"></i>
             <span class="menu-title">KYC Verification</span>

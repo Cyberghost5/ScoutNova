@@ -3,7 +3,11 @@
     <li class="list active text-white">
       <div class="profile"><img src="<?php echo (!empty($user['photo'])) ? 'images/'.$user['photo'] : 'images/profile.jpg'; ?>" class="img-circle elevation-2" height="60" width="60" alt="image" style="border-radius:50%;"><span class="online"></span></div>
       <div class="info mb-3 mt-3">
-        <h5><?php echo $user['username']; ?></h5>
+        <h5><?php echo $user['username']; ?>
+        <?php if ($user['subscription_status'] == 'active'): ?>
+        <sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> 
+        <?php endif; ?>
+        </h5>
         <p>Type: 
             <?php if($user['role'] == 'agent'): 
               $role = "Agent/Scout";
@@ -25,14 +29,14 @@
       </a>
     </li>
     <?php if($user['role'] == 'user'): ?>
-      <?php if($user['verification'] == 0 || $user['verification'] == 2 || $user['verification'] == 3): ?>
-      <!-- <li class="nav-item">
-        <a class="nav-link" href="kyc">
+      <?php if($user['verified'] == 0 || $user['verified'] == 2 || $user['verified'] == 3): ?>
+      <li class="nav-item">
+        <a class="nav-link" href="player-verification">
           <i class="mdi mdi-account-check menu-icon"></i>
-          <span class="menu-title">KYC Verification</span>
+          <span class="menu-title">Verification</span>
           <span class="badge right text-danger"><i class="mdi mdi-check-decagram"></i></span>
         </a>
-      </li> -->
+      </li>
       <?php endif; ?>
       <li class="nav-item">
         <a class="nav-link" href="settings">
@@ -89,6 +93,21 @@
         </a>
       </li>
     <?php elseif($user['role'] == 'agent'): ?>
+      <?php if($user['verified'] == 0 || $user['verified'] == 2 || $user['verified'] == 3): ?>
+      <li class="nav-item">
+        <a class="nav-link" href="scout-verification">
+          <i class="mdi mdi-account-check menu-icon"></i>
+          <span class="menu-title">Verification</span>
+          <span class="badge right text-danger"><i class="mdi mdi-check-decagram"></i></span>
+        </a>
+      </li>
+      <?php endif; ?>
+      <li class="nav-item">
+        <a class="nav-link" href="subscriptions">
+          <i class="mdi mdi-credit-card-multiple menu-icon"></i>
+          <span class="menu-title">Subscription</span>
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="discover">
           <i class="mdi mdi-account-search menu-icon"></i>
