@@ -1,7 +1,6 @@
 # --- Environment files ---
 .htaccess
-include/global.php
-config/local.php
+# include/global.php
 
 # --- Dependency folders ---
 vendor/
