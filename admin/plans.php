@@ -64,8 +64,8 @@
                           <th>Name</th>
                           <th>Plan ID</th>
                           <th>Amount</th>
-                          <th>Details</th>
                           <th>Interval</th>
+                          <th>Details</th>
                           <th>Date Created</th>
                           <th>Action</th>
                         </tr>
@@ -75,7 +75,7 @@
                         $conn = $pdo->open();
 
                         try{
-                          $stmt = $conn->prepare("SELECT * FROM plans ORDER BY id DESC");
+                          $stmt = $conn->prepare("SELECT * FROM plans ORDER BY plan_id ASC");
                           $stmt->execute();
                           $i = 0;
                           foreach($stmt as $row){
@@ -86,8 +86,8 @@
                               <td>".$row['name']."</td>
                               <td>".$row['plan_id']."</td>
                               <td>".$row['currency']." ".$row['amount']."</td>
-                              <td>".$row['details']."</td>
                               <td>".$row['intervals']."</td>
+                              <td>".$row['details']."</td>
                               <td>".date('M d, Y', strtotime($row['created_at']))."</td>
                               <td>
                                 <button class='btn btn-danger btn-sm delete btn-rounded' data-id='".$row['id']."'><i class='mdi mdi-delete'></i> Delete</button>
