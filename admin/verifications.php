@@ -84,7 +84,7 @@
                       <?php if ($v['type'] == 'player'): ?>
                         <ul class="list-unstyled">
                           <li><b>ID Document:</b> <a href="<?= $v['official_id_url'] ?>" target="_blank">View</a></li>
-                          <li><b>Intro Video:</b> <a href="<?= $v['intro_video_url'] ?>" target="_blank">Watch</a></li>
+                          <li><b>Intro Video:</b> <a href="<?= $v['parent_consent'] ?>" target="_blank">Watch</a></li>
                           <?php if ($v['team_affiliated']): ?>
                             <li><b>Team Proof:</b> <a href="<?= $v['team_proof_url'] ?>" target="_blank">View</a></li>
                           <?php endif; ?>

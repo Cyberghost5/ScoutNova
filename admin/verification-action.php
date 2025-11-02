@@ -32,11 +32,11 @@ try {
     // Update player table if approved
     if ($status === 'approved') {
       $conn->prepare("UPDATE users SET verified=1 WHERE id=?")
-            ->execute([$now, $record['player_id']]);
+            ->execute([$record['player_id']]);
     }
     if ($status === 'rejected') {
       $conn->prepare("UPDATE users SET verified=2 WHERE id=?")
-            ->execute([$now, $record['player_id']]);
+            ->execute([$record['player_id']]);
     }
 
   } elseif ($type === 'scout') {
@@ -53,11 +53,11 @@ try {
 
     if ($status === 'approved') {
       $conn->prepare("UPDATE users SET verified=1 WHERE id=?")
-           ->execute([$now, $record['scout_id']]);
+           ->execute([$record['scout_id']]);
     }
     if ($status === 'rejected') {
       $conn->prepare("UPDATE users SET verified=2 WHERE id=?")
-            ->execute([$now, $record['scout_id']]);
+            ->execute([$record['scout_id']]);
     }
   }
 

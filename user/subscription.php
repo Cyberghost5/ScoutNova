@@ -58,7 +58,7 @@ if($_GET['action'] == 'cancel'){
       $stmt->execute([$subscription['id']]);
 
       // Update the users table to remove subscription info
-      $stmt = $conn->prepare("UPDATE users SET subscription_plan_id = 1 WHERE email = ?");
+      $stmt = $conn->prepare("UPDATE users SET subscription_plan_id = 1, subscription_status = NULL WHERE email = ?");
       $stmt->execute([$user['email']]);
 
       $_SESSION['success'] = 'Subscription cancelled successfully.';
