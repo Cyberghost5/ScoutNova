@@ -70,6 +70,9 @@ if($user['profile_set'] == 0){
                 if ($user['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
+                if ($user['verified'] == 3) {
+                    $kyc = '<span class="badge badge-danger">Pending</span>';
+                }
                 if ($user['role'] == 'agent') {
                     $usertype = '<span class="badge badge-primary">Agent</span>';
                 }

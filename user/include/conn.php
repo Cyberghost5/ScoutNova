@@ -1,11 +1,12 @@
 <?php
+include '../include/global.php';
 
 Class Database{
 
-  private $server = "mysql:host=localhost;dbname=nova";
-  private $username = "root";
-  private $password = "";
-  private $options  = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,);
+  private $server = DB_HOSTNAMEDNS;
+  private $username = DB_USERNAME;
+  private $password = DB_PASSWORD;
+  private $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,);
   protected $conn;
 
   public function open(){

@@ -72,7 +72,7 @@ try {
         ]);
     }
 
-    // 🔁 Update PlayerStats (aggregate)
+    // 🔁 Update playerstats (aggregate)
     $stats = $conn->prepare("
         SELECT 
             AVG(total_score) AS avg_score, 
@@ -102,13 +102,13 @@ try {
     // Simple formula: average of average_score and average_consistency
     $pod_score = ($summary['avg_score'] + $summary['avg_consistency']) / 2;
 
-    // Check if PlayerStats exists
-    $check = $conn->prepare("SELECT * FROM PlayerStats WHERE player_id = ?");
+    // Check if playerstats exists
+    $check = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");
     $check->execute([$player_id]);
 
     if ($check->fetch()) {
         $updateStats = $conn->prepare("
-            UPDATE PlayerStats 
+            UPDATE playerstats 
             SET total_videos=?, 
                 average_score=?, 
                 average_consistency=?, 
@@ -127,7 +127,7 @@ try {
         ]);
     } else {
         $insertStats = $conn->prepare("
-            INSERT INTO PlayerStats 
+            INSERT INTO playerstats 
             (player_id, total_videos, average_score, average_consistency, best_skill, pod_score, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, NOW())
         ");

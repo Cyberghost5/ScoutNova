@@ -8,11 +8,17 @@ $logged_in_user_id = $admin['id']; // or set manually for testing
 $other_user_id = $_GET['user_id'] ?? null;
 
 if (!$other_user_id) {
-    die("No user specified.");
+    $_SESSION['error'] = "No user specified.";
+    header('location: messages');
+    exit;
+    // die("No user specified.");
 }
 
 if ($other_user_id == $logged_in_user_id) {
-    die("You cannot start a chat with yourself.");
+    $_SESSION['error'] = "You cannot start a chat with yourself.";
+    header('location: messages');
+    exit;
+    // die("You cannot start a chat with yourself.");
 }
 
 // Step 1: Check if chat already exists

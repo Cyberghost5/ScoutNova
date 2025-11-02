@@ -59,7 +59,7 @@ try {
                 echo json_encode(["error" => "Video not found or missing Cloudinary public_id."]);
                 $_SESSION['error'] = "Video not found or missing Cloudinary public_id.";
             }
-        } elseif ($video['upload_type'] === 'manual') {
+        } elseif ($video['upload_type'] === 'local') {
             if (!empty($video['file_path']) && file_exists($video['file_path'])) {
                 unlink($video['file_path']); // delete from server
                 

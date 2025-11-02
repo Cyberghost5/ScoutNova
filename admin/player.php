@@ -88,6 +88,12 @@ $user_player = $stmt->fetch();
                 if ($user_player['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
+                if ($user_player['verified'] == 2) {
+                    $kyc = '<span class="badge badge-danger">Pending</span>';
+                }
+                if ($user_player['verified'] == 3) {
+                    $kyc = '<span class="badge badge-danger">Pending</span>';
+                }
                 if ($user_player['role'] == 'agent') {
                     $user_playertype = '<span class="badge badge-primary">Agent</span>';
                 }
@@ -144,14 +150,14 @@ $user_player = $stmt->fetch();
                 <div data-pws-tab="pod" data-pws-tab-name="POD" class="playerpod">
                   <?php
                   // Player stats
-                  $statsStmt = $conn->prepare("SELECT * FROM PlayerStats WHERE player_id = ?");
+                  $statsStmt = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");
                   $statsStmt->execute([$player_id]);
                   $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
 
                   // All video ratings
                   $ratingsStmt = $conn->prepare("
                       SELECT v.description, r.total_score, r.consistency_index, r.rating_breakdown, r.created_at
-                      FROM PODRatings r
+                      FROM podratings r
                       JOIN videos v ON v.id = r.video_id
                       WHERE r.player_id = ?
                       ORDER BY r.created_at ASC

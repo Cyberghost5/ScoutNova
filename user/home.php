@@ -81,14 +81,14 @@ if($user['profile_set'] == 0){
           $player = $stmt->fetch(PDO::FETCH_ASSOC);
 
           // Player stats
-          $statsStmt = $conn->prepare("SELECT * FROM PlayerStats WHERE player_id = ?");
+          $statsStmt = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");
           $statsStmt->execute([$player['id']]);
           $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
           
           // All video ratings
           $ratingsStmt = $conn->prepare("
             SELECT v.description, r.total_score, r.consistency_index, r.rating_breakdown, r.created_at
-            FROM PODRatings r
+            FROM podratings r
             JOIN videos v ON v.id = r.video_id
             WHERE r.player_id = ?
             ORDER BY r.created_at ASC

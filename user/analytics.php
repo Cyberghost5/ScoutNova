@@ -71,7 +71,7 @@ if($user['profile_set'] == 0){
           // All video ratings
           $ratingsStmt = $conn->prepare("
             SELECT v.description, r.total_score, r.consistency_index, r.rating_breakdown, r.created_at
-            FROM PODRatings r
+            FROM podratings r
             JOIN videos v ON v.id = r.video_id
             WHERE r.player_id = ?
             ORDER BY r.created_at ASC
@@ -164,7 +164,7 @@ if($user['profile_set'] == 0){
                               }
 
                               // Fetch POD rating for this video
-                              $ratingStmt = $conn->prepare("SELECT * FROM PODRatings WHERE video_id = ? AND player_id = ?");
+                              $ratingStmt = $conn->prepare("SELECT * FROM podratings WHERE video_id = ? AND player_id = ?");
                               $ratingStmt->execute([$video['id'], $player['id']]);
                               $r = $ratingStmt->fetch(PDO::FETCH_ASSOC);
                               if (!$r) continue; // Skip videos without POD rating

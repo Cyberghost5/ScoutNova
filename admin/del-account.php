@@ -16,10 +16,10 @@
 			$stmt = $conn->prepare("DELETE FROM agent_profiles WHERE user_id=:userid");
 			$stmt->execute(['userid'=>$id]);
 
-			$stmt = $conn->prepare("DELETE FROM PODRatings WHERE player_id=:playerid");
+			$stmt = $conn->prepare("DELETE FROM podratings WHERE player_id=:playerid");
 			$stmt->execute(['playerid'=>$id]);
 
-			$stmt = $conn->prepare("DELETE FROM PlayerStats WHERE player_id=:playerid");
+			$stmt = $conn->prepare("DELETE FROM playerstats WHERE player_id=:playerid");
 			$stmt->execute(['playerid'=>$id]);
 
 			$stmt = $conn->prepare("DELETE FROM chats WHERE user1_id=:userid OR user2_id=:userid");
