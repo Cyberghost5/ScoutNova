@@ -82,10 +82,10 @@ $user_player = $stmt->fetch();
                   unset($_SESSION['success']);
                 }
 
-                if ($user_player['verification'] == 1) {
+                if ($user_player['verified'] == 1) {
                     $kyc = '<span class="badge badge-success">Passed</span>';
                 }
-                if ($user_player['verification'] == 0) {
+                if ($user_player['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
                 if ($user_player['role'] == 'agent') {
@@ -359,7 +359,7 @@ $user_player = $stmt->fetch();
                     <div class="form-group row">
                       <label for="inputName2" class="col-sm-2 col-form-label">Phone No.</label>
                       <div class="col-sm-10">
-                        <input type="number" value="<?php echo $user_player['contact_info']; ?>" class="form-control" id="inputName2" placeholder="Name">
+                        <input type="tel" value="<?php echo $user_player['contact_info']; ?>" class="form-control" id="inputName2" placeholder="Name">
                       </div>
                     </div>
                   </form>

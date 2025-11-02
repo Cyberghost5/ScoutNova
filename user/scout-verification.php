@@ -3,8 +3,14 @@
 <html lang="en">
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
-    echo "<script>window.location.assign('set-profile')</script>"; 
-    // header('location: set-profile');
+  echo "<script>window.location.assign('set-profile')</script>"; 
+  exit;
+  // header('location: set-profile');
+};
+if($user['role'] != 'agent'){
+  echo "<script>window.location.assign('player-verification')</script>";
+  exit;
+  // header('location: index');
 };
 $stmt = $conn->prepare("SELECT * FROM scout_verifications WHERE scout_id = ? ORDER BY id DESC LIMIT 1");
 $stmt->execute([$user['id']]);

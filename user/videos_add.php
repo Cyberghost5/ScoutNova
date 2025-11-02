@@ -10,6 +10,28 @@
     use Cloudinary\Cloudinary;
     use Cloudinary\Api\Exception\ApiError;
 
+    // Confirm user subscription status, and if the user is not subscribed, and  number of videos uploaded exceeds allowed limit, block upload.
+    $conn = $pdo->open();
+    $stmt = $conn->prepare("SELECT * FROM subscriptions WHERE user_id = ? AND status = 'active' ORDER BY created_at DESC LIMIT 1");
+    $stmt->execute([$user['id']]);
+    $subscription = $stmt->fetch();
+
+    if (!$subscription) {
+        // No active subscription, check number of uploaded videos
+        $videoCountStmt = $conn->prepare("SELECT COUNT(*) AS video_count FROM videos WHERE player_id = ?");
+        $videoCountStmt->execute([$user['id']]);
+        $videoCountResult = $videoCountStmt->fetch();
+        $uploadedVideos = $videoCountResult ? $videoCountResult['video_count'] : 0;
+
+        $freeUploadLimit = 5; // Set free upload limit
+
+        if ($uploadedVideos >= $freeUploadLimit) {
+            $_SESSION['error'] = 'You have reached the free upload limit. Please subscribe to upload more videos.';
+            header('location: videos');
+            exit;
+        }
+    }
+
 	if(isset($_POST['add'])){
 		$full_link = $_POST['full_link'];
 		$detail = $_POST['detail'];
@@ -18,7 +40,7 @@
 
 		$conn = $pdo->open();
 
-            $upload_type = 'local';
+            $upload_type = $settings['upload_type']; //'local';
 
             $videoUrl = null; // will store the final video path or URL
 

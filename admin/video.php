@@ -155,7 +155,7 @@ $user = $stmt->fetch();
                     
                     <div class="container">
                       <h2>Video Analysis</h2>
-                      <p><strong>Category:</strong> <?php echo htmlspecialchars($video['category']); ?></p>
+                      <p><strong>Category:</strong> <?php echo ucfirst(htmlspecialchars($video['category'])); ?></p>
                       <p><strong>Uploaded:</strong> <?php echo date('M d, Y - h:i A', strtotime($video['created_at'])); ?></p>
                       <p><strong>Analysised:</strong> <?php echo date('M d, Y - h:i A', strtotime($video['updated_at'])); ?></p>
   

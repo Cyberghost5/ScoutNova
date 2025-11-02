@@ -3,9 +3,10 @@
 <html lang="en">
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
-    echo "<script>window.location.assign('set-profile')</script>"; 
+  echo "<script>window.location.assign('set-profile')</script>"; 
+  exit;
     // header('location: set-profile');
-}?>
+};?>
 <!-- Plugin css for this page -->
 <body class="sidebar-dark">
   <div class="container-scroller">

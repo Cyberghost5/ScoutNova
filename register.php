@@ -95,6 +95,9 @@ $now = date('d F, Y');
                   <input type="email" class="form-control form-control-lg" name="email" id="exampleInputEmail1" placeholder="Email" required>
                 </div>
                 <div class="form-group">
+                  <input type="tel" class="form-control form-control-lg" name="phone" id="exampleInputPhone1" placeholder="Phone Number (Include Country Code)" required>
+                </div>
+                <div class="form-group">
                   <select class="form-control form-control-lg" name="role" id="role" required>
                     <option value="">Sign up as</option>
                     <option value="user">Player</option>

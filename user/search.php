@@ -4,6 +4,7 @@
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
     echo "<script>window.location.assign('set-profile')</script>"; 
+    exit;
     // header('location: set-profile');
 }
 $search_parameter = $_POST['search'] ?? '';
@@ -38,7 +39,7 @@ $search_parameter = $_POST['search'] ?? '';
               <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                   <h3 class="font-weight-bold">Search</h3>
-                  <h6 class="font-weight-normal mb-0">Results relationg to <?php echo $search_parameter
+                  <h6 class="font-weight-normal mb-0">Results relating to <?php echo $search_parameter
                   ; ?>.</h6>
                 </div>
               </div>

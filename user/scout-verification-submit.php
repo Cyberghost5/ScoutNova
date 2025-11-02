@@ -63,7 +63,7 @@ foreach ([$cert,$exp,$biz] as $file) {
     exit;
   }
 }
-$upload_type = 'local';
+$upload_type = $settings['upload_type']; //'local';
 
 // Proceed with uploads to Cloudinary
 if($upload_type === 'cloudinary'){

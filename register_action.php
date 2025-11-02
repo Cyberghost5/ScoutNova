@@ -27,6 +27,7 @@ try {
 		$username = substr($firstname, 0, 3).''.substr($lastname, 0, 3).''.substr(rand(), 0, 3);
 		$role = $_POST['role'];
 		$email = $_POST['email'];
+		$phone = $_POST['phone'];
 		$password = $_POST['password'];
 		$confirm_password = $_POST['confirm_password'];
 
@@ -101,8 +102,8 @@ try {
 				{
 					try{
 						// Insert new user into DB
-						$stmt = $conn->prepare("INSERT INTO users (username, firstname, lastname, role, email, password, activate_code, created_on) VALUES (:username, :firstname, :lastname, :role, :email, :password, :code, :now)");
-						$stmt->execute(['username'=>$username, 'firstname'=>$firstname, 'lastname'=>$lastname, 'role'=>$role, 'email'=>$email, 'password'=>$password, 'code'=>$code, 'now'=>$now]);
+						$stmt = $conn->prepare("INSERT INTO users (username, firstname, lastname, role, email, contact_info, password, activate_code, created_on) VALUES (:username, :firstname, :lastname, :role, :email, :phone, :password, :code, :now)");
+						$stmt->execute(['username'=>$username, 'firstname'=>$firstname, 'lastname'=>$lastname, 'role'=>$role, 'email'=>$email, 'phone'=>$phone, 'password'=>$password, 'code'=>$code, 'now'=>$now]);
 						$userid = $conn->lastInsertId();
 
 						$message = "

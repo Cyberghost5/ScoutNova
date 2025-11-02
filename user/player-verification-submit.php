@@ -60,13 +60,16 @@ if ($ok !== true) {
     exit;
 }
 
-// Validate intro video (limit ~60MB here)
-$intro = $_FILES['intro_video'] ?? null;
-$ok2 = validate_file($intro, ['mp4','mov','mkv','webm','avi','3gp'], 60 * 1024 * 1024);
-if ($ok2 !== true) {
-    $_SESSION['error'] = $ok2;
-    header("Location: player-verification"); 
-    exit;
+// validate parent consent form (optional)
+$parent_consent = null;
+if (!empty($_FILES['parent_consent']) && $_FILES['parent_consent']['error'] !== UPLOAD_ERR_NO_FILE) {
+    $parent_consent = $_FILES['parent_consent'];
+    $ok2 = validate_file($parent_consent, ['jpg','jpeg','png','pdf'], 10 * 1024 * 1024);
+    if ($ok2 !== true) {
+        $_SESSION['error'] = $ok2;
+        header("Location: player-verification"); 
+        exit;
+    }
 }
 
 // Team proof optional
@@ -81,7 +84,7 @@ if (!empty($_FILES['team_proof']) && $_FILES['team_proof']['error'] !== UPLOAD_E
     }
 }
 
-$upload_type = 'local';
+$upload_type = $settings['upload_type']; //'local';
 
 // Proceed with uploads to Cloudinary
 if($upload_type === 'cloudinary'){
@@ -93,13 +96,14 @@ if($upload_type === 'cloudinary'){
         ]);
         $official_url = $res1['secure_url'] ?? $res1['url'] ?? null;
 
-        // Intro video (resource_type video)
-        $res2 = $cloudinary->uploadApi()->upload($_FILES['intro_video']['tmp_name'], [
-            'folder' => "scoutnova/verifications/intro_videos",
-            'resource_type' => 'video',
-            'chunked' => true
-        ]);
-        $intro_url = $res2['secure_url'] ?? $res2['url'] ?? null;
+        // consent form if provided
+        if (isset($parent_consent) && $parent_consent['error'] === UPLOAD_ERR_OK) {
+            $res2 = $cloudinary->uploadApi()->upload($parent_consent['tmp_name'], [
+                'folder' => "scoutnova/verifications/parent_consent",
+                'resource_type' => 'image'
+            ]);
+            $parent_consent_url = $res2['secure_url'] ?? $res2['url'] ?? null;
+        }
 
         // Team proof if provided
         if (isset($teamProof) && $teamProof['error'] === UPLOAD_ERR_OK) {
@@ -137,23 +141,26 @@ if($upload_type === 'cloudinary'){
             exit;
         }
 
-        // Intro video (resource_type video)
-        $targetDir = "upload/verifications/";
-        if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
-        }
-        
-        $fileName = uniqid() . '_' . basename($_FILES['intro_video']['name']);
-        $targetFilePath = $targetDir . $fileName;
-        
-        if (move_uploaded_file($_FILES['intro_video']['tmp_name'], $targetFilePath)) {
-            // Save relative path for easy access
-            $intro_url = $settings['site_url']."user/upload/verifications/" . $fileName;
-        } else {
-            // die("<div style='color:red;'>Error uploading file locally.</div>");
-            $_SESSION['error'] = 'Error uploading intro video file locally.';
-            header('location: player-verification');
-            exit;
+        // Parent consent
+        if (isset($parent_consent) && $parent_consent['error'] === UPLOAD_ERR_OK) {
+
+            $targetDir = "upload/parent_consent/";
+            if (!file_exists($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+            
+            $fileName = uniqid() . '_' . basename($parent_consent['name']);
+            $targetFilePath = $targetDir . $fileName;
+            
+            if (move_uploaded_file($parent_consent['tmp_name'], $targetFilePath)) {
+                // Save relative path for easy access
+                $parent_consent_url = $settings['site_url']."user/upload/parent_consent/" . $fileName;
+            } else {
+                // die("<div style='color:red;'>Error uploading file locally.</div>");
+                $_SESSION['error'] = 'Error uploading parent consent file locally.';
+                header('location: player-verification');
+                exit;
+            }
         }
 
         // Team proof if provided
@@ -200,7 +207,7 @@ $notes = trim($_POST['notes'] ?? '');
 try {
     $stmt = $conn->prepare("
         INSERT INTO player_verifications
-        (player_id, official_id_url, team_affiliated, team_proof_url, intro_video_url, social_handles, status, review_notes, created_at)
+        (player_id, official_id_url, team_affiliated, team_proof_url, parent_consent, social_handles, status, review_notes, created_at)
         VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, NOW())
     ");
     $team_aff = isset($_POST['team_affiliated']) && $_POST['team_affiliated'] == '1' ? 1 : 0;
@@ -209,7 +216,7 @@ try {
         $official_url,
         $team_aff,
         $team_proof_url,
-        $intro_url,
+        $parent_consent,
         json_encode($social, JSON_UNESCAPED_SLASHES),
         $notes
     ]);

@@ -4,6 +4,7 @@
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
     echo "<script>window.location.assign('set-profile')</script>"; 
+    exit;
     // header('location: set-profile');
 }?> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
@@ -131,7 +132,7 @@ if($user['profile_set'] == 0){
             <div class="col-md-9 grid-margin transparent">
               <div class="demo-tabs">
 
-              <div data-pws-tab="pod" data-pws-tab-name="POD" class="playerpod">
+                <div data-pws-tab="pod" data-pws-tab-name="POD" class="playerpod">
                   <?php
                   // Player stats
                   $statsStmt = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");

@@ -269,10 +269,14 @@ button, input, optgroup, select, textarea {
 
                                 <div class="form-group">
                                     <label>Date of Birth</label>
+                                    <?php 
+                                    // max age is 21 years
+                                    $maxDate = date('Y-m-d', strtotime('-16 years'));
+                                    ?>
                                     <input type="date" name="dob" 
                                         class="form-control" 
                                         placeholder="e.g., AIK Fotboll, LA Lakers" 
-                                        value="" required>
+                                        value="" max="<?php echo $maxDate; ?>" required>
                                 </div>
 
                               </div>
@@ -515,7 +519,7 @@ button, input, optgroup, select, textarea {
               <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <div class='alert alert-success alert-dismissible'>
+                        <div class='alert alert-success alert-dismissible mb-0'>
                           <h4><i class='icon mdi mdi-check'></i> Success!</h4>
                           Profile has already been set
                         </div>

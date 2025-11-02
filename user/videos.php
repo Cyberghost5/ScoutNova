@@ -4,6 +4,7 @@
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
     echo "<script>window.location.assign('set-profile')</script>"; 
+    exit;
     // header('location: set-profile');
 }?>
 <!-- Plugin css for this page -->
@@ -232,11 +233,11 @@ if($user['profile_set'] == 0){
               <textarea name="detail" class="form-control" rows="8" cols="80" placeholder="Enter Video Summary" required></textarea>
             </div>
             <div class="form-group">
-              <label class="col-sm-6 control-label">Longer Video Link</label>
+              <label class="control-label">Longer Video Link</label>
               <input type="url" class="form-control" name="full_link" placeholder="Enter URL" required>
             </div>
             <div class="form-group">
-              <label for="validity" class="col-sm-6 control-label">Video</label>
+              <label for="validity" class="control-label">Video</label>
               <input type="file" class="form-control" name="video" required accept="video/*">
             </div>
             <small>Videos must capture: Impressive key passes, Good defensive actions, Prolific goals (e.g., overhead kick for striker profiles). And for basketball: Skillful dunking , Successful dribbles, Completion of drills, Sprinting ability, Shooting power, Agility, balance, ball control.</small><br>

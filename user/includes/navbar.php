@@ -8,7 +8,7 @@
       <span class="icon-menu"></span>
     </button>
     <?php if($user['role'] == 'agent'): ?>
-    <ul class="navbar-nav mr-lg-2">
+    <!-- <ul class="navbar-nav mr-lg-2">
       <li class="nav-item nav-search d-none d-lg-block">
         <form action="search" method="post">
           <div class="input-group">
@@ -21,7 +21,7 @@
           </div>
         </form>
       </li>
-    </ul>
+    </ul> -->
     <?php endif; ?>
     <ul class="navbar-nav navbar-nav-right">
       <li class="nav-item nav-profile dropdown">
@@ -30,18 +30,28 @@
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
           <a class="dropdown-item" href="#profile" data-toggle="modal">
-            <i class="ti-user text-danger"></i>
-            <?php echo $user['username'];?><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i>
+            <i class="ti-user text-primary"></i>
+            <?php echo $user['username'];?>
+            <?php if ($user['subscription_status'] == 'active'): ?>
+            <i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i>
+            <?php endif; ?>
           </a>
           <a class="dropdown-item" href="settings">
             <i class="ti-settings text-primary"></i>
              Settings
           </a>
           <?php if($user['verified'] == 0 || $user['verified'] == 2 || $user['verified'] == 3): ?>
-          <!-- <a class="dropdown-item" href="kyc">
-            <i class="mdi mdi-check-decagram"></i>
-            <span class="menu-title">KYC Verification</span>
-          </a> -->
+            <?php if($user['role'] == 'agent'): ?>
+            <a class="dropdown-item" href="scout-verification">
+              <i class="ti-info-alt text-danger"></i>
+              <span class="menu-title">Verification</span>
+            </a>
+            <?php elseif($user['role'] == 'user'): ?>
+            <a class="dropdown-item" href="player-verification">
+              <i class="ti-info-alt text-danger"></i>
+              <span class="menu-title">Verification</span>
+            </a>
+            <?php endif; ?>
           <?php endif; ?>
           <a class="dropdown-item" href="logout">
             <i class="ti-power-off text-primary"></i>

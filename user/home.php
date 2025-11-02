@@ -3,11 +3,12 @@
 <html lang="en">
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
-    echo "<script>window.location.assign('set-profile')</script>"; 
+  echo "<script>window.location.assign('set-profile')</script>"; 
+  exit;
     // header('location: set-profile');
 }?>
 <!-- Plugin css for this page -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
 <!-- End plugin css for this page -->
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
  <style>
@@ -227,7 +228,7 @@ if($user['profile_set'] == 0){
                     <?php
                     
                     // FETCH VIDEOS
-                    $stmt = $conn->prepare("SELECT * FROM videos WHERE player_id = ? ORDER BY id DESC");
+                    $stmt = $conn->prepare("SELECT * FROM videos WHERE player_id = ? ORDER BY id DESC LIMIT 4");
                     $stmt->execute([$user['id']]);
                     $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);      
                     ?>
@@ -253,7 +254,7 @@ if($user['profile_set'] == 0){
                         <div class="demo-gallery-poster">
                           <img src="../assets/images/lightbox/play-button.png" alt="image">
                         </div>
-                        <small class="text-muted">Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?></small>
+                        <small class="text-muted">Uploaded: <?php echo date('d, M Y - h:i a', strtotime($video['created_at'])); ?></small>
                         <p class="mb-0"><b>Analysis Status:</b> <?php echo $video_analysis; ?></p>
                       </a>
                       <?php endforeach; ?>

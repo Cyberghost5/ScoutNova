@@ -1,4 +1,5 @@
 <?php include 'includes/head.php'; ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
 <body class="sidebar-dark">
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
@@ -353,7 +354,7 @@
                     <?php
                     
                     // FETCH VIDEOS
-                    $stmt = $conn->prepare("SELECT * FROM videos ORDER BY id DESC");
+                    $stmt = $conn->prepare("SELECT * FROM videos ORDER BY id DESC LIMIT 4");
                     $stmt->execute();
                     $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);      
                     ?>
@@ -406,6 +407,27 @@
   <!-- container-scroller -->
 
   <?php include 'includes/scripts.php'; ?>
+  <!-- GLightbox JS (from cdnjs) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/js/glightbox.min.js" integrity="" crossorigin="anonymous"></script>
+  <script>
+    // Initialize a simple GLightbox instance for links with class .glightbox
+    const lightbox = GLightbox({
+      selector: '.glightbox',
+      touchNavigation: true,
+      loop: true,
+      // If you want videos to start playing immediately when the slide opens, try autoplayVideos: true
+      // Note: autoplay behavior is constrained by browser policies (mobile often requires muted autoplay).
+      // autoplayVideos: true,
+    });
+
+    // Example: programmatic API usage — open the first item on load (commented out by default)
+    // lightbox.open();
+
+    // Events: useful if you want to pause other players when a slide changes
+    lightbox.on('open', ({index, slide}) => {
+      // console.log('opened slide', index, slide);
+    });
+  </script>
 </body>
 
 </html>

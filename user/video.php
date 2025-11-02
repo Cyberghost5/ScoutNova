@@ -34,7 +34,12 @@ if (!$user_player) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<?php include 'includes/head.php'; ?> 
+<?php include 'includes/head.php'; 
+if($user['profile_set'] == 0){
+  echo "<script>window.location.assign('set-profile')</script>"; 
+  exit;
+    // header('location: set-profile');
+};?> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -170,11 +175,12 @@ if (!$user_player) {
                     
                     <div class="container">
                       <h2>Video Analysis</h2>
-                      <p><strong>Category:</strong> <?php echo htmlspecialchars($video['category']); ?></p>
-                      <p><strong>Uploaded:</strong> <?php echo date('M d, Y', strtotime($video['created_at'])); ?></p>
+                      <p><strong>Category:</strong> <?php echo ucfirst(htmlspecialchars($video['category'])); ?></p>
+                      <p><strong>Uploaded:</strong> <?php echo date('M d, Y - h:i a', strtotime($video['created_at'])); ?></p>
+                      <p><strong>Analysised:</strong> <?php echo date('M d, Y - h:i A', strtotime($video['updated_at'])); ?></p>
   
                       <div class="chart-container">
-                          <canvas id="skillsChart"></canvas>
+                        <canvas id="skillsChart"></canvas>
                       </div>
   
                       <div class="stats">
@@ -204,9 +210,9 @@ if (!$user_player) {
                                         <?php echo $breakdown['agility']; ?>
                                     ],
                                     fill: true,
-                                    backgroundColor: 'rgba(37,99,235,0.2)',
-                                    borderColor: '#2563eb',
-                                    pointBackgroundColor: '#1e3a8a',
+                                    backgroundColor: 'rgba(16,185,129,0.2)',
+                                    borderColor: '#10b981',
+                                    pointBackgroundColor: '#047857'
                                 }]
                             },
                             options: {

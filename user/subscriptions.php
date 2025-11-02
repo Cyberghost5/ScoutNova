@@ -4,6 +4,8 @@
 <?php include 'includes/head.php';
 if($user['profile_set'] == 0){
     echo "<script>window.location.assign('set-profile')</script>"; 
+    exit;
+exit;
     // header('location: set-profile');
 } ?> 
 <body class="sidebar-dark">
@@ -61,6 +63,23 @@ if($user['profile_set'] == 0){
                   ";
                   unset($_SESSION['cancelled']);
                 }
+              ?>
+              <?php
+              // If user is not verified, show alert
+              if($user['verified'] != 1){
+                if($user['role'] == 'agent'){
+                  $verification_page = '<a href="scout-verification">verify</a>';
+                }elseif($user['role'] == 'user'){
+                  $verification_page = '<a href="player-verification">verify</a>';
+                }
+                  echo "
+                    <div class='alert alert-warning alert-dismissible'>
+                      <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                      <h4><i class='icon mdi mdi-information-outline'></i> Notice!</h4>
+                      You'll need to $verification_page your account first. 
+                    </div>
+                  ";
+              }; 
               ?>
             </div>
           </div>
@@ -153,8 +172,8 @@ if($user['profile_set'] == 0){
                               <li><?php echo $plan['details']; ?></li>
                             </ul>
                             <div class="wrapper">
-                              <?php if($user['subscription_plan_id'] == $plan['plan_id'] || $user['subscription_plan_id'] == $plan['id']): ?>
-                                <a href="#" class="btn btn-outline-primary active btn-block">Subscribed</a>
+                              <?php if(stripos($plan['name'], 'Free') !== false): ?>
+                                <p class="btn btn-outline-primary active btn-block">Subscribed</p>
                               <?php else: ?>
                                 <a href="#" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#methodModal<?php echo $i; ?>">Upgrade</a>
                               <?php endif; ?>

@@ -89,10 +89,10 @@ if (!$user_player) {
                   unset($_SESSION['success']);
                 }
 
-                if ($user_player['verification'] == 1) {
+                if ($user_player['verified'] == 1) {
                     $kyc = '<span class="badge badge-success">Passed</span>';
                 }
-                if ($user_player['verification'] == 0) {
+                if ($user_player['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
                 if ($user_player['role'] == 'agent') {
@@ -133,11 +133,8 @@ if (!$user_player) {
                     <li class="list-group-item">
                       <b>Verification</b> <span class="float-right"> <?php echo $kyc; ?></span>
                     </li>
-                    <li class="list-group-item">
-                      <b>User Type</b> <span class="float-right"> <?php echo $user_playertype; ?></span>
-                    </li>
                   </ul>
-                  <a href="new_message?user_id=<?= $player['user_id'] ?>" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-chat-outline"></i> Message</b></a>
+                  <!-- <a href="new_message?user_id=<?= $player['user_id'] ?>" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-chat-outline"></i> Message</b></a> -->
                   <?php if($user['role'] == 'agent'): ?>
                   <a href="watchlist_action?user_id=<?= $player['user_id'] ?>" class="btn btn-info btn-rounded btn-block"><b><i class="mdi mdi-account-multiple-outline"></i> Add to Watchlist</b></a>
                   <?php endif; ?>
@@ -273,7 +270,7 @@ if (!$user_player) {
                   });
                   </script>
                   <?php else: ?>
-                    <li class="list-group-item text-muted">No POD yet.</li>
+                    <li class="list-group-item text-muted text-center">No POD yet.</li>
                   <?php endif; ?>
 
                 </div>
@@ -365,7 +362,7 @@ if (!$user_player) {
                     <div class="form-group row">
                       <label for="inputName2" class="col-sm-2 col-form-label">Phone No.</label>
                       <div class="col-sm-10">
-                        <input type="number" value="<?php echo $user_player['contact_info']; ?>" class="form-control" id="inputName2" placeholder="Name">
+                        <input type="tel" value="<?php echo $user_player['contact_info']; ?>" class="form-control" id="inputName2" placeholder="Name">
                       </div>
                     </div>
                   </form>
@@ -386,6 +383,7 @@ if (!$user_player) {
                             $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);    
                             ?>
                             
+                            <?php if (count($videos) > 0): ?>
                               <?php foreach ($videos as $video): 
                       
                               if($video['status'] == 0){
@@ -412,6 +410,9 @@ if (!$user_player) {
                                 <h6>Analysis Status: <?php echo $video_analysis; ?></h6>
                               </a>
                               <?php endforeach; ?>
+                            <?php else: ?>
+                              <li class="list-group-item text-muted w-100 text-center">No videos uploaded yet.</li>
+                            <?php endif; ?>
 
 
 

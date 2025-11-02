@@ -128,6 +128,8 @@ if (isset($_POST['save'])) {
               $stmt->execute(['profile_set'=>1, 'photo'=>$newFileName, 'id'=>$userid]);
               
               $_SESSION['success'] = "Profile set successfully";
+              unset($_SESSION['error1']);
+              unset($_SESSION['error']);
               echo "<script>window.location.assign('home')</script>";
       
           } else {

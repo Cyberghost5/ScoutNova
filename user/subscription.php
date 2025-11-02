@@ -2,6 +2,17 @@
 include 'include/session.php';
 $flutterwave_secret_key = $settings['flutterwave_secret_key'];
 
+// if user is not verrified, redirect to verification page
+if(!$user['verified']){
+    $_SESSION['error'] = 'Please verify your account to manage subscriptions.';
+    if($user['role'] == 'agent'){
+        header('location: scout-verification');
+    }elseif($user['role'] == 'user'){
+        header('location: player-verification');
+    }
+    exit;
+}
+
 if($_GET['action'] == 'cancel'){
   $conn = $pdo->open();
 

@@ -4,6 +4,7 @@
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
     echo "<script>window.location.assign('set-profile')</script>"; 
+    exit;
     // header('location: set-profile');
 }?>
 <!-- Plugin css for this page -->
@@ -151,6 +152,8 @@ if($user['profile_set'] == 0){
                             $where[] = "plstats.average_consistency <= 50";
                         }
                     }
+
+                    $where[] = "p.user_id != $user[id]";
 
 
                     $sql = "
