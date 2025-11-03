@@ -1,0 +1,23 @@
+{
+	"event": "subscription.cancelled",
+	"data": {
+		"id": "45024",
+		"status": "deactivated",
+		"currency": "NGN",
+		"amount": 20,
+		"customer": {
+			"email": "harkonestores@gmail.com",
+			"full_name": "Harkone Stores"
+		},
+		"plan": {
+			"id": 226994,
+			"name": "Player Gold Monthly",
+			"amount": 20,
+			"currency": "USD",
+			"interval": "hourly",
+			"duration": 0,
+			"status": "active",
+			"date_created": "2025-11-01T18:00:47.000Z"
+		}
+	}
+}

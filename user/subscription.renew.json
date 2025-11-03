@@ -1,0 +1,45 @@
+{
+	"event": "charge.completed",
+	"data": {
+		"id": 9761273,
+		"tx_ref": "SNOVA-6906bcfc6f666",
+		"flw_ref": "FLW-MOCK-SUB-0179f067b13610ef631b286ca00423b3",
+		"device_fingerprint": "N/A",
+		"amount": 20,
+		"currency": "USD",
+		"charged_amount": 20,
+		"app_fee": 0.76,
+		"merchant_fee": 0,
+		"processor_response": "Approved",
+		"auth_model": "noauth",
+		"ip": "54.75.161.64",
+		"narration": "Charge for Player Gold Monthly",
+		"status": "successful",
+		"payment_type": "card",
+		"created_at": "2025-11-03T06:18:23.000Z",
+		"account_id": 180480,
+		"customer": {
+			"id": 3393903,
+			"name": "Harkone Stores",
+			"phone_number": null,
+			"email": "harkonestores@gmail.com",
+			"created_at": "2025-11-02T02:08:45.000Z"
+		},
+		"card": {
+			"first_6digits": "506146",
+			"last_4digits": "4667",
+			"issuer": "MAESTRO  DEBIT",
+			"country": "NG",
+			"type": "MAESTRO",
+			"expiry": "10/29"
+		}
+	},
+	"meta_data": {
+		"__CheckoutInitAddress": "https://checkout-v2.dev-flutterwave.com/v3/hosted/pay",
+		"payment_plan": "226994",
+		"payment_plan_id": "3",
+		"price": "20",
+		"user_id": "1"
+	},
+	"event.type": "CARD_TRANSACTION"
+}

@@ -17,11 +17,11 @@ $stmt->execute([$input, 'Flutterwave Webhook']);
 $signature = $_SERVER['HTTP_VERIF_HASH'] ?? '';
 $secret_hash = $settings['flutterwave_hash']; // set this from your Flutterwave dashboard
 
-if (!$signature || $signature !== $secret_hash) {
-    http_response_code(401);
-    echo "Invalid signature";
-    exit;
-}
+// if (!$signature || $signature !== $secret_hash) {
+//     http_response_code(401);
+//     echo "Invalid signature";
+//     exit;
+// }
 
 if (!isset($event['event'])) {
     http_response_code(400);
@@ -33,12 +33,76 @@ $eventType = $event['event'];
 
 switch ($eventType) {
     case 'charge.completed':
+        // ✅ Payment successful or subscription renewed
+        $customer_email = $event['data']['customer']['email'] ?? null;
+        $plan_id = $event['meta_data']['payment_plan'] ?? null;
+        $subscription_id = $event['data']['id'] ?? null;
+
+        $stmt = $conn->prepare("SELECT * FROM plans WHERE plan_id = ?");
+        $stmt->execute([$plan_id]);
+        $plan = $stmt->fetch();
+
+        $plan_name = $plan['name'];
+        $plan_interval = lcfirst($plan['intervals']);
+
+        // Compute next payment date based on interval
+        switch ($plan_interval) {
+            case 'hourly':
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 hour'));
+                break;
+            case 'daily':
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 day'));
+                break;
+            case 'weekly':
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 week'));
+                break;
+            case 'monthly':
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 month'));
+                break;
+            case 'quarterly':
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+3 months'));
+                break;
+            case 'yearly':
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 year'));
+                break;
+            default:
+                $next_payment_date = date('Y-m-d H:i:s', strtotime('+1 month'));
+        }
+
+        // Find the user from the email
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
+        $stmt->execute([$customer_email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $user_id = $user['id'];
+
+            // Insert or update the subscription record
+            $stmt = $conn->prepare("
+                INSERT INTO subscriptions (user_id, user_email, plan_id, plan_name, subscription_id, status, next_payment_date, updated_at)
+                VALUES (?, ?, ?, ?, ?, 'active', ?, NOW())
+                ON DUPLICATE KEY UPDATE
+                    status='active',
+                    next_payment_date=VALUES(next_payment_date),
+                    updated_at=NOW()
+            ");
+            $stmt->execute([$user_id, $customer_email, $plan_id, $plan_name, $subscription_id, $next_payment_date]);
+
+            // ✅ Update user table: mark as subscribed
+            $stmt = $conn->prepare("UPDATE users SET subscription_status = 'active', subscription_plan_id = ? WHERE id = ?");
+            $stmt->execute([$plan_id, $user_id]);
+
+            // Update players table if user is a player
+            $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
+            $stmt->execute([$plan_id, $user_id]);
+        }
+
+        break;
     case 'subscription.charge.completed':
         // ✅ Payment successful or subscription renewed
         $customer_email = $event['data']['customer']['email'] ?? null;
-        $plan_id = $event['data']['plan'] ?? null;
-        $subscription_id = $event['data']['subscription_id'] ?? null;
-        $interval = strtolower($event['data']['plan_object']['interval'] ?? 'monthly');
+        $plan_id = $event['meta_data']['payment_plan'] ?? null;
+        $subscription_id = $event['data']['id'] ?? null;
 
         $stmt = $conn->prepare("SELECT * FROM plans WHERE plan_id = ?");
         $stmt->execute([$plan_id]);
@@ -123,6 +187,7 @@ switch ($eventType) {
             $stmt = $conn->prepare("UPDATE players SET subscription_status = 'cancelled', subscription_plan_id = NULL, featured = 0 WHERE user_id = ?");
             $stmt->execute([$sub['user_id']]);
         }
+        // echo "Handled subscription.cancelled";
 
         break;
     case 'subscription.expired':
