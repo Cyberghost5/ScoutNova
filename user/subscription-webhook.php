@@ -17,11 +17,11 @@ $stmt->execute([$input, 'Flutterwave Webhook']);
 $signature = $_SERVER['HTTP_VERIF_HASH'] ?? '';
 $secret_hash = $settings['flutterwave_hash']; // set this from your Flutterwave dashboard
 
-// if (!$signature || $signature !== $secret_hash) {
-//     http_response_code(401);
-//     echo "Invalid signature";
-//     exit;
-// }
+if (!$signature || $signature !== $secret_hash) {
+    http_response_code(401);
+    echo "Invalid signature";
+    exit;
+}
 
 if (!isset($event['event'])) {
     http_response_code(400);
