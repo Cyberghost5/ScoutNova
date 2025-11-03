@@ -95,6 +95,18 @@ switch ($eventType) {
             // Update players table if user is a player
             $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
             $stmt->execute([$plan_id, $user_id]);
+
+            // Insert into transactions table
+            $stmt = $conn->prepare("
+                INSERT INTO transactions (user_id, amount, currency, payment_method, transaction_type, transaction_id, status, created_at)
+                VALUES (?, ?, ?, ?, 'Subscription Payment', ?, '1', NOW())
+            ");
+            $amount = $event['data']['amount'] ?? 0;
+            $currency = $event['data']['currency'] ?? 'USD';
+            $payment_method = $event['data']['payment_type'] ?? 'unknown';
+            $transaction_id = $event['data']['tx_ref'] ?? '';
+            $stmt->execute([$user_id, $amount, $currency, $payment_method, $transaction_id]);
+
         }
 
         break;
@@ -161,6 +173,17 @@ switch ($eventType) {
             // Update players table if user is a player
             $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
             $stmt->execute([$plan_id, $user_id]);
+
+            // Insert into transactions table
+            $stmt = $conn->prepare("
+                INSERT INTO transactions (user_id, amount, currency, payment_method, transaction_type, transaction_id, status, created_at)
+                VALUES (?, ?, ?, ?, 'Subscription Payment', ?, '1', NOW())
+            ");
+            $amount = $event['data']['amount'] ?? 0;
+            $currency = $event['data']['currency'] ?? 'USD';
+            $payment_method = $event['data']['payment_type'] ?? 'unknown';
+            $transaction_id = $event['data']['tx_ref'] ?? '';
+            $stmt->execute([$user_id, $amount, $currency, $payment_method, $transaction_id]);
         }
 
         break;

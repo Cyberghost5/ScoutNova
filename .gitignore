@@ -6,3 +6,4 @@ include/global.php
 vendor/
 user/images
 user/upload
+include/
