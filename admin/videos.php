@@ -91,14 +91,18 @@
                         </thead>
                         <tbody>
                           <?php foreach ($videos as $video): 
-
-                          $stmt = $conn->prepare("SELECT * FROM users WHERE id = :user_id");
-                          $stmt->execute(['user_id' => $video['player_id']]);
+                          
+                          $stmt = $conn->prepare("SELECT * FROM players WHERE id = ?");
+                          $stmt->execute([$video['player_id']]);
                           $player = $stmt->fetch();
 
-                          $stmt = $conn->prepare("SELECT * FROM players WHERE user_id = :user_id");
-                          $stmt->execute(['user_id' => $video['player_id']]);
-                          $user_player = $stmt->fetch();
+                          // var_dump($player);
+
+                          $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+                          $stmt->execute([$player['user_id']]);
+                          $user = $stmt->fetch();
+
+                          // var_dump($user);
 
                           $video_analysis = '';
                           if($video['status'] == 0){
@@ -137,7 +141,7 @@
                               </div>
                             </td>
                             <td class="py-1 ps-0">
-                              <p class="mb-0"><a href="player?id=<?php echo $user_player['id']; ?>"><?php echo $player['firstname'] . ' ' . $player['lastname']; ?></a></p>
+                              <p class="mb-0"><a href="player?id=<?php echo $player['id']; ?>"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?></a></p>
                               <p class="mb-0 text-muted text-small">
                                 <?php if (!empty($video['created_at'])): ?>
                                   <?= date("M j, g:i a", strtotime($video['created_at'])) ?>

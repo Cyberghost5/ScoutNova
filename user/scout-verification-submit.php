@@ -53,7 +53,7 @@ function validate_file($file, $allowed_exts, $max_bytes) {
 
 $cert = $_FILES['certification'];
 $exp  = $_FILES['experience'];
-$biz  = $_FILES['business_doc'];
+$biz  = $_FILES['official_id'];
 
 foreach ([$cert,$exp,$biz] as $file) {
   $ok = validate_file($file, ['jpg','jpeg','png','pdf'], 10*1024*1024);
@@ -82,7 +82,7 @@ if($upload_type === 'cloudinary'){
 
         // Business document
         $res3 = $cloudinary->uploadApi()->upload($biz['tmp_name'], [
-            'folder' => "scoutnova/verifications/scouts/business_docs"
+            'folder' => "scoutnova/verifications/scouts/official_ids"
         ]);
         $bizUrl = $res3['secure_url'] ?? $res3['url'] ?? null;
 
@@ -139,10 +139,10 @@ if($upload_type === 'cloudinary'){
             mkdir($targetDir, 0777, true);
         }
         
-        $fileName = uniqid() . '_' . basename($_FILES['business_doc']['name']);
+        $fileName = uniqid() . '_' . basename($_FILES['official_id']['name']);
         $targetFilePath = $targetDir . $fileName;
         
-        if (move_uploaded_file($_FILES['business_doc']['tmp_name'], $targetFilePath)) {
+        if (move_uploaded_file($_FILES['official_id']['tmp_name'], $targetFilePath)) {
             // Save relative path for easy access
             $bizUrl = $settings['site_url']."user/upload/verifications/" . $fileName;
         } else {

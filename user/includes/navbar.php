@@ -26,7 +26,7 @@
     <ul class="navbar-nav navbar-nav-right">
       <li class="nav-item nav-profile dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-          <img src="<?php echo (!empty($user['photo'])) ? 'images/'.$user['photo'] : 'images/profile.jpg'; ?>" alt="profile"/>
+          <img src="<?php echo $settings['site_url']; ?>user/<?php echo (!empty($user['photo'])) ? 'images/'.$user['photo'] : 'images/profile.jpg'; ?>" alt="profile"/>
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
           <a class="dropdown-item" href="#profile" data-toggle="modal">
@@ -36,24 +36,26 @@
             <i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i>
             <?php endif; ?>
           </a>
-          <a class="dropdown-item" href="settings">
+          <?php if($user['role'] == 'user'): ?>
+          <a class="dropdown-item" href="<?php echo $settings['site_url']; ?>user/settings">
             <i class="ti-settings text-primary"></i>
              Settings
           </a>
+          <?php endif; ?>
           <?php if($user['verified'] == 0 || $user['verified'] == 2 || $user['verified'] == 3): ?>
             <?php if($user['role'] == 'agent'): ?>
-            <a class="dropdown-item" href="scout-verification">
+            <a class="dropdown-item" href="<?php echo $settings['site_url']; ?>user/scout-verification">
               <i class="ti-info-alt text-danger"></i>
               <span class="menu-title">Verification</span>
             </a>
             <?php elseif($user['role'] == 'user'): ?>
-            <a class="dropdown-item" href="player-verification">
+            <a class="dropdown-item" href="<?php echo $settings['site_url']; ?>user/player-verification">
               <i class="ti-info-alt text-danger"></i>
               <span class="menu-title">Verification</span>
             </a>
             <?php endif; ?>
           <?php endif; ?>
-          <a class="dropdown-item" href="logout">
+          <a class="dropdown-item" href="<?php echo $settings['site_url']; ?>user/logout">
             <i class="ti-power-off text-primary"></i>
             Logout
           </a>

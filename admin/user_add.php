@@ -5,11 +5,11 @@
 		$firstname = $_POST['firstname'];
 		$lastname = $_POST['lastname'];
 		$username = $_POST['username'];
+		$role = $_POST['role'];
 		$email = $_POST['email'];
 		$password = $_POST['password'];
 		$address = $_POST['address'];
 		$contact = $_POST['contact'];
-		$site_url = $settings['site_url'];
 
 		$conn = $pdo->open();
 
@@ -34,8 +34,8 @@
 				move_uploaded_file($_FILES['photo']['tmp_name'], '../user/images/'.$filename);
 			}
 			try{
-				$stmt = $conn->prepare("INSERT INTO users (email, password, firstname, lastname, username, address, contact_info, photo, status, created_on) VALUES (:email, :password, :firstname, :lastname, :username, :address, :contact, :photo, :status, :created_on)");
-				$stmt->execute(['email'=>$email, 'password'=>$password, 'firstname'=>$firstname, 'lastname'=>$lastname, 'username'=>$username, 'address'=>$address, 'contact'=>$contact, 'photo'=>$filename, 'status'=>1, 'created_on'=>$now]);
+				$stmt = $conn->prepare("INSERT INTO users (email, password, role, firstname, lastname, username, address, contact_info, photo, status, created_on) VALUES (:email, :password, :firstname, :lastname, :username, :address, :contact, :photo, :status, :created_on)");
+				$stmt->execute(['email'=>$email, 'password'=>$password, 'role'=>$role, 'firstname'=>$firstname, 'lastname'=>$lastname, 'username'=>$username, 'address'=>$address, 'contact'=>$contact, 'photo'=>$filename, 'status'=>1, 'created_on'=>$now]);
 				$_SESSION['success'] = 'User added successfully';
 
 			}

@@ -6,6 +6,18 @@ RewriteRule ^([^\.]+)$ $1.php [NC,L]
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule !.*\.php$ %{REQUEST_FILENAME}.php [QSA,L]
 
+# ./
+RewriteRule ^property/([^/]+)$ property.php?slug=$1 [L,QSA]
+
+# ./admin/
+RewriteRule ^admin/player/([^/]+)$ admin/player.php?id=$1 [L,QSA]
+RewriteRule ^admin/agent/([^/]+)$ admin/agent.php?id=$1 [L,QSA]
+RewriteRule ^admin/user/([^/]+)$ admin/user.php?id=$1 [L,QSA]
+RewriteRule ^admin/transaction/([^/]+)$ admin/transaction.php?order_id=$1 [L,QSA]
+
+# ./user/
+RewriteRule ^user/player/([^/]+)$ user/player.php?id=$1 [L,QSA]
+
 <Files .htaccess>
 Order allow,deny
 Deny from all

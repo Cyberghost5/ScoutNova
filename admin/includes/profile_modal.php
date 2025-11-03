@@ -9,9 +9,9 @@
               </button>
           	</div>
           	<div class="modal-body">
-            	<form class="form-horizontal" method="POST" action="profile_update?return=<?php echo basename($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
+            	<form class="form-horizontal" method="POST" action="<?php echo $settings['site_url']; ?>admin/profile_update?return=<?php echo basename($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
                 <center>
-                <img src="<?php echo (!empty($admin['photo'])) ? 'images/'.$admin['photo'] : 'images/profile.jpg'; ?>" class="img-circle elevation-2" height="120" width="120" alt="User Image">
+                <img src="<?php echo $settings['site_url']; ?>admin/<?php echo (!empty($admin['photo'])) ? 'images/'.$admin['photo'] : 'images/profile.jpg'; ?>" class="img-circle elevation-2" height="120" width="120" alt="User Image">
                 </center>
                 <div class="form-group">
                   	<label for="email" class="control-label">Email</label>

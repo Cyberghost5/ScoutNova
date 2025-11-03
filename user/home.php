@@ -438,7 +438,7 @@ if($user['profile_set'] == 0){
                 <div class="col-md-3 mb-4 stretch-card transparent">
                   <div class="card card-primary">
                     <div class="card-body">
-                      <p class="mb-4">Players Shortlisted</p>
+                      <p class="mb-4">Players Watchlisted</p>
                       <p class="fs-30 mb-2">18</p>
                       <p>5 new additions</p>
                     </div>
@@ -498,7 +498,7 @@ if($user['profile_set'] == 0){
                     <?php
                     // FETCH Players
                     $sql = "
-                      SELECT u.firstname, u.lastname, p.country, p.positions, p.dob, p.user_id, p.id, p.game_type, p.footedness, p.gender, plstats.average_score AS average_score, plstats.average_consistency AS average_consistency,
+                      SELECT u.firstname, u.lastname, u.photo, p.country, p.positions, p.dob, p.user_id, p.uuid, p.id, p.game_type, p.footedness, p.gender, plstats.average_score AS average_score, plstats.average_consistency AS average_consistency,
                       plstats.pod_score AS pod_score, TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) AS age
                       FROM players p
                       JOIN users u ON u.id = p.user_id
@@ -523,14 +523,14 @@ if($user['profile_set'] == 0){
                     ?>
                     <div class="col-md-4 mb-3">
                       <div class="card mt-3 p-3 player-card">
-                        <img src="<?php echo (!empty($player['profile_image'])) ? 'images/'.$player['profile_image'] : 'images/profile.jpg'; ?>" style="width: 100px;" class="img-fluid rounded mb-2" alt="">
+                        <img src="<?php echo (!empty($player['photo'])) ? 'images/'.$player['photo'] : 'images/profile.jpg'; ?>" style="width: 100px;" class="img-fluid rounded mb-2" alt="">
                         <h6 class="fw-bold mb-0"><?php echo $player_user['firstname']; ?> <?php echo $player_user['lastname']; ?></h6>
                         <small class="text-muted"><?php echo trim($roles[0]); ?> • <?php echo $player['country']; ?> • Age <?php echo (new DateTime())->diff(new DateTime(($player['dob'])))->y; ?></small>
                         <hr>
                         <p class="mb-1"><b>POD Score:</b> <?= $player['pod_score'] ?: 'N/A' ?></p>
                         <p class="mb-1"><b>Overall Score:</b> <?= $player['average_score'] ?: 'N/A' ?></p>
                         <p class="mb-1"><b>Consistency:</b> <?= !empty($player['average_consistency']) ? $player['average_consistency'] . '%' : 'N/A' ?></p>
-                        <a class="btn btn-sm btn-outline-primary mt-2 w-100" href="player?id=<?php echo $player['id']; ?>"><i class="bi bi-eye me-1"></i>View Profile</a>
+                        <a class="btn btn-sm btn-outline-primary mt-2 w-100" href="player/<?php echo $player['uuid']; ?>"><i class="bi bi-eye me-1"></i>View Profile</a>
                       </div>
                     </div>
                     <?php endforeach; ?>
@@ -549,7 +549,7 @@ if($user['profile_set'] == 0){
             <div class="col-md-12 grid-margin grid-margin-md-0 stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">My Shortlisted Players</h4>
+                  <h4 class="card-title">My Watchlisted Players</h4>
                   <div class="table-responsive">
                     <?php if (count($chats) > 0): ?>
                       <table class="table">

@@ -15,6 +15,15 @@ if($user['role'] != 'agent'){
 $stmt = $conn->prepare("SELECT * FROM scout_verifications WHERE scout_id = ? ORDER BY id DESC LIMIT 1");
 $stmt->execute([$user['id']]);
 $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$stmt = $conn->prepare("SELECT * FROM agent_profiles WHERE user_id = ? ORDER BY id DESC LIMIT 1");
+$stmt->execute([$user['id']]);
+$agent = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$agent) {
+    echo "<script>window.location.assign('set-profile')</script>";
+    exit;
+}
 ?> 
 <body class="sidebar-dark">
   <div class="container-scroller">
@@ -88,25 +97,30 @@ $existing = $stmt->fetch(PDO::FETCH_ASSOC);
                       if($user['verified'] === 2 || $user['verified'] === 0): ?>  
                       <form method="post" action="scout-verification-submit.php" enctype="multipart/form-data" class="card p-4 mt-4">
 
-                        <!-- Professional Certification -->
                         <div class="mb-3">
-                          <label class="form-label">Professional Certification (CSA, PSC, etc.)</label>
-                          <input type="file" name="certification" accept=".jpg,.jpeg,.png,.pdf" class="form-control" required>
-                          <small class="text-muted">Upload a clear image or PDF of your certification. Max 10MB.</small>
+                          <label class="form-label">Full Name <small class="text-muted">(Surname first)</small></label>
+                          <input type="text" name="full_name" class="form-control" value="<?php echo $user['firstname'].' '.$user['lastname']; ?>" placeholder="Enter your full name as appear on your Official ID" required>
+                          <small class="form-text text-muted">Must match national or international ID.</small>
                         </div>
 
+                        <div class="mb-3">
+                          <label class="form-label">Government-issued ID (National ID, Passport, or Driver's License) <small class="text-muted">(Image or PDF)</small></label>
+                          <input type="file" name="official_id" accept=".jpg,.jpeg,.png,.pdf" class="form-control" required>
+                          <small class="form-text text-muted">Max 10MB.</small>
+                        </div>
+                        
                         <!-- Experience Proof -->
                         <div class="mb-3">
-                          <label class="form-label">Proof of Experience (contract, testimonial, reference letter)</label>
+                          <label class="form-label">Agency/Club Affiliation</label>
                           <input type="file" name="experience" accept=".jpg,.jpeg,.png,.pdf" class="form-control" required>
-                          <small class="text-muted">Max 10MB file.</small>
+                          <small class="text-muted">Upload a clear image or PDF of your Proof of employment or representation letter. Max 10MB file.</small>
                         </div>
-
-                        <!-- Business Registration -->
+                        
+                        <!-- Professional Certification -->
                         <div class="mb-3">
-                          <label class="form-label">Business Registration Document (CAC or equivalent)</label>
-                          <input type="file" name="business_doc" accept=".jpg,.jpeg,.png,.pdf" class="form-control" required>
-                          <small class="text-muted">Max 10MB file.</small>
+                          <label class="form-label">Professional Certification</label>
+                          <input type="file" name="certification" accept=".jpg,.jpeg,.png,.pdf" class="form-control" required>
+                          <small class="text-muted">Upload a clear image or PDF of your certification. Max 10MB.</small>
                         </div>
 
                         <!-- Social Media -->

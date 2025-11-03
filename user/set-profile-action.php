@@ -25,6 +25,7 @@ if (isset($_POST['save'])) {
     $set = $_POST['set'] ?? '';
     $dob = $_POST['dob'] ?? '';
     $userid = $user['id'];
+    $uuid = $user['uuid'];
     
     
     if ($user['profile_set'] == 1) {
@@ -59,9 +60,9 @@ if (isset($_POST['save'])) {
           if (move_uploaded_file($fileTmpPath, $destPath)) {
               $imagePath = 'images/' . $newFileName; // relative path for storage/display
 
-              $stmt = $conn->prepare("INSERT INTO players (user_id, game_type, country, gender, club, positions, weight, description, height, footedness, academy_status, academy_name, profile_image, dob) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-              $stmt->execute([$userid, $game_type, $country, $gender, $club, $positions, $weight, $description, $height, $footedness, $academy_status, $academy_name, $newFileName, $dob]);
+              $stmt = $conn->prepare("INSERT INTO players (user_id, uuid, game_type, country, gender, club, positions, weight, description, height, footedness, academy_status, academy_name, profile_image, dob) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+              $stmt->execute([$userid, $uuid, $game_type, $country, $gender, $club, $positions, $weight, $description, $height, $footedness, $academy_status, $academy_name, $newFileName, $dob]);
 
               $stmt = $conn->prepare("UPDATE users SET profile_set=:profile_set, subscription_status=:subscription_status, subscription_plan_id=:subscription_plan_id, photo=:photo WHERE id=:id");
               $stmt->execute(['profile_set'=>1, 'subscription_status'=>1, 'subscription_plan_id'=>1, 'photo'=>$newFileName, 'id'=>$userid]);
@@ -87,6 +88,7 @@ if (isset($_POST['save'])) {
     $organization = $_POST['organization'] ?? '';
     $bio = $_POST['bio'] ?? '';
     $userid = $user['id'];
+    $uuid = $user['uuid'];
     
     
     if ($user['profile_set'] == 1) {
@@ -120,9 +122,9 @@ if (isset($_POST['save'])) {
           if (move_uploaded_file($fileTmpPath, $destPath)) {
               $imagePath = 'images/' . $newFileName; // relative path for storage/display
 
-              $stmt = $conn->prepare("INSERT INTO agent_profiles (user_id, game_type, country, license_number, organization, bio, profile_image) 
-              VALUES (?, ?, ?, ?, ?, ?, ?)");
-              $stmt->execute([$userid, $game_type, $country, $license_number, $organization, $bio, $newFileName]);
+              $stmt = $conn->prepare("INSERT INTO agent_profiles (user_id, uuid, game_type, country, license_number, organization, bio, profile_image) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+              $stmt->execute([$userid, $uuid, $game_type, $country, $license_number, $organization, $bio, $newFileName]);
 
               $stmt = $conn->prepare("UPDATE users SET profile_set=:profile_set, photo=:photo WHERE id=:id");
               $stmt->execute(['profile_set'=>1, 'photo'=>$newFileName, 'id'=>$userid]);

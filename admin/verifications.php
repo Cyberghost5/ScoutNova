@@ -55,7 +55,7 @@
                 ");
 
                 $scoutStmt = $conn->query("
-                  SELECT sv.*, u.firstname, u.lastname, 'scout' AS type
+                  SELECT sv.*, u.firstname, u.lastname, 'scout/agent' AS type
                   FROM scout_verifications sv
                   JOIN users u ON u.id = sv.scout_id
                   WHERE sv.status = 'pending'
@@ -84,16 +84,16 @@
                       <?php if ($v['type'] == 'player'): ?>
                         <ul class="list-unstyled">
                           <li><b>ID Document:</b> <a href="<?= $v['official_id_url'] ?>" target="_blank">View</a></li>
-                          <li><b>Intro Video:</b> <a href="<?= $v['parent_consent'] ?>" target="_blank">Watch</a></li>
+                          <li><b>Parent Consent:</b> <a href="<?= $v['parent_consent'] ?>" target="_blank">View</a></li>
                           <?php if ($v['team_affiliated']): ?>
                             <li><b>Team Proof:</b> <a href="<?= $v['team_proof_url'] ?>" target="_blank">View</a></li>
                           <?php endif; ?>
                         </ul>
                       <?php else: ?>
                         <ul class="list-unstyled">
+                          <li><b>Official ID:</b> <a href="<?= $v['business_registration_url'] ?>" target="_blank">View</a></li>
                           <li><b>Certification:</b> <a href="<?= $v['certification_url'] ?>" target="_blank">View</a></li>
                           <li><b>Experience Proof:</b> <a href="<?= $v['experience_proof_url'] ?>" target="_blank">View</a></li>
-                          <li><b>Business Registration:</b> <a href="<?= $v['business_registration_url'] ?>" target="_blank">View</a></li>
                         </ul>
                       <?php endif; ?>
 

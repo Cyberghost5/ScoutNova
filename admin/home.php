@@ -229,7 +229,7 @@
                               <div class="d-flex align-items-center">
                                 <img src="<?php echo (!empty($player['photo'])) ? '../user/images/'.$player['photo'] : '../user/images/profile.jpg'; ?>" alt="profile" class="mr-3">
                                 <div class="ms-3">
-                                  <p class="mb-0"><a href="player?id=<?php echo $player['id']; ?>"><?php echo $player['firstname'] . ' ' . $player['lastname']; ?></p>
+                                  <p class="mb-0"><a href="player/<?php echo $player['uuid']; ?>"><?php echo $player['firstname'] . ' ' . $player['lastname']; ?></p>
                                   <p class="mb-0 text-muted text-small">
                                     <?= htmlspecialchars($player['country'] . ' | ' . (new DateTime())->diff(new DateTime(($player['dob'])))->y); ?> years old
                                   </p>
@@ -250,7 +250,7 @@
                               <?php endif; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="player?id=<?= $player['id'] ?>"><i class="mdi mdi-eye"></i> View</a>
+                              <a class="btn btn-sm btn-outline-success" href="player/<?= $player['uuid'] ?>"><i class="mdi mdi-eye"></i> View</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>
@@ -309,7 +309,7 @@
                               <div class="d-flex align-items-center">
                                 <img src="<?php echo (!empty($agent['photo'])) ? '../user/images/'.$agent['photo'] : '../user/images/profile.jpg'; ?>" alt="profile" class="mr-3">
                                 <div class="ms-3">
-                                  <p class="mb-0"><a href="player?id=<?php echo $agent['id']; ?>"><?php echo $agent['firstname'] . ' ' . $agent['lastname']; ?></p>
+                                  <p class="mb-0"><a href="<?php echo $settings['site_url']; ?>admin/agent/<?php echo $agent['uuid']; ?>"><?php echo $agent['firstname'] . ' ' . $agent['lastname']; ?></p>
                                   <p class="mb-0 text-muted text-small">
                                     <?= htmlspecialchars($agent['country'] . ' | ' . ($agent['organization'])); ?> years old
                                   </p>
@@ -330,7 +330,7 @@
                               <?php endif; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="agent?id=<?= $agent['id'] ?>"><i class="mdi mdi-eye"></i> View</a>
+                              <a class="btn btn-sm btn-outline-success" href="agent/<?= $agent['uuid'] ?>"><i class="mdi mdi-eye"></i> View</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>

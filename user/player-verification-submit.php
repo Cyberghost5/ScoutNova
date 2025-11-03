@@ -16,7 +16,7 @@ if (!isset($user['id'])) {
     exit;
 }
 
-$player_id = intval($_POST['player_id'] ?? 0);
+$player_id = intval($user['id'] ?? 0);
 if ($player_id <= 0 || $player_id !== (int)$user['id']) {
     $_SESSION['error'] = "Invalid player.";
     header("Location: player-verification");

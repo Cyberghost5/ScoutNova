@@ -56,7 +56,6 @@
                     All Scouts/Agents on <?php echo $settings['site_name']; ?>
                   </p>
                   <div class="table-responsive">
-                    <a href="#addnew1" data-toggle="modal" class="btn btn-rounded btn-primary btn-sm mb-3"><i class="mdi mdi-account-plus"></i> New</a>
                     <table class="table" id="example2">
                       <thead>
                         <tr>
@@ -109,7 +108,7 @@
                               <div class="d-flex align-items-center">
                                 <img src="<?php echo (!empty($agent['photo'])) ? '../user/images/'.$agent['photo'] : '../user/images/profile.jpg'; ?>" alt="profile" class="mr-3">
                                 <div class="ms-3">
-                                  <p class="mb-0"><a href="agent?id=<?php echo $agent['id']; ?>"><?php echo $agent['firstname'] . ' ' . $agent['lastname']; ?></p>
+                                  <p class="mb-0"><a href="agent/<?php echo $agent['uuid']; ?>"><?php echo $agent['firstname'] . ' ' . $agent['lastname']; ?></p>
                                   <p class="mb-0 text-muted text-small">
                                     <?= htmlspecialchars($agent['country'] . ' | ' . $agent['organization']); ?> years old
                                   </p>
@@ -130,7 +129,7 @@
                               <?php endif; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="agent?id=<?= $agent['id'] ?>"><i class="mdi mdi-eye"></i> View</a>
+                              <a class="btn btn-sm btn-outline-success" href="agent/<?= $agent['uuid'] ?>"><i class="mdi mdi-eye"></i> View</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>

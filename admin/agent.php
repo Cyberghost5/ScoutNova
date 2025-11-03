@@ -2,14 +2,15 @@
 <?php include 'includes/head.php';
  
 $agent_id = $_GET['id'] ?? 0;
-// $stmt = $conn->prepare("SELECT * FROM players WHERE id=:userid");
-$stmt = $conn->prepare("SELECT * FROM agent_profiles WHERE id=:userid");
+$agent_id = preg_replace('/\.php$/', '', $agent_id);
+
+$stmt = $conn->prepare("SELECT * FROM agent_profiles WHERE uuid=:userid");
 $stmt->execute(['userid'=>$agent_id]);
 $agent = $stmt->fetch();
 
 if (!$agent) {
     $_SESSION['error'] = 'Agent not found.';
-    header('location: agents');
+    header('location: ../agents');
     exit();
 }
 
@@ -64,10 +65,10 @@ $user_agent = $stmt->fetch();
                   unset($_SESSION['success']);
                 }
 
-                if ($user_agent['verification'] == 1) {
+                if ($user_agent['verified'] == 1) {
                     $kyc = '<span class="badge badge-success">Passed</span>';
                 }
-                if ($user_agent['verification'] == 0) {
+                if ($user_agent['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
                 if ($user_agent['role'] == 'agent') {
@@ -85,7 +86,7 @@ $user_agent = $stmt->fetch();
               <div class="card tale-bg">
                 <div class="card-body box-profile">
                   <div class="text-center">
-                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo (!empty($agent['profile_image'])) ? '../user/images/'.$agent['profile_image'] : '../user/images/profile.jpg'; ?>" alt="User profile picture">
+                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo $settings['site_url']; ?>admin/<?php echo (!empty($agent['profile_image'])) ? '../user/images/'.$agent['profile_image'] : '../user/images/profile.jpg'; ?>" alt="User profile picture">
                   </div>
 
                   <h3 class="profile-username text-center"><?php echo $user_agent['username'];?><sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> </h3>
@@ -97,13 +98,13 @@ $user_agent = $stmt->fetch();
                       <b>Sport</b> <span class="float-right"> <?php echo ucfirst($agent['game_type']); ?></span>
                     </li>
                     <li class="list-group-item">
-                      <b>Verification</b> <span class="float-right"> <?php echo $kyc; ?></span>
+                      <b>verified</b> <span class="float-right"> <?php echo $kyc; ?></span>
                     </li>
                     <li class="list-group-item">
                       <b>User Type</b> <span class="float-right"> <?php echo $user_agenttype; ?></span>
                     </li>
                   </ul>
-                  <a href="new_message?user_id=<?= $agent['user_id'] ?>" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-chat-outline"></i> Message</b></a>
+                  <a href="<?php echo $settings['site_url']; ?>admin/new_message?user_id=<?= $agent['user_id'] ?>" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-chat-outline"></i> Message</b></a>
                   
                   <a href="#change_password" data-toggle="modal" class="btn btn-primary btn-rounded btn-block"><b>Change Password</b></a>
                   
@@ -238,7 +239,7 @@ $user_agent = $stmt->fetch();
                 <!--</div>-->
               </div>
               <hr>
-                <form action="reset-password-action" method="post">
+                <form action="<?php echo $settings['site_url']; ?>admin/reset-password-action" method="post">
                    <div class="form-group">
                     <small>Enter Old Password:</small>
                   <input type="password" class="form-control" id="curr_password" name="curr_password" placeholder="Input your old password to save changes" required>
@@ -281,7 +282,7 @@ $user_agent = $stmt->fetch();
                   </div>
                 </div>
               </div>
-            <form action="del-account" method="post">
+            <form action="<?php echo $settings['site_url']; ?>admin/del-account" method="post">
           	</div>
           	<div class="modal-footer justify-content-between">
             	<button type="button" class="btn btn-success btn-rounded btn-flat" data-dismiss="modal"><i class="mdi mdi-window-close"></i> No, don't delete</button>

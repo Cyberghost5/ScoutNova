@@ -92,9 +92,15 @@ switch ($eventType) {
             $stmt = $conn->prepare("UPDATE users SET subscription_status = 'active', subscription_plan_id = ? WHERE id = ?");
             $stmt->execute([$plan_id, $user_id]);
 
-            // Update players table if user is a player
-            $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
-            $stmt->execute([$plan_id, $user_id]);
+            if($user['role'] == 'user'){
+                // Update players table if user is a player
+                $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
+                $stmt->execute([$plan_id, $user_id]);
+            }elseif($user['role'] == 'agent'){
+                // Update agents table if user is a coach
+                $stmt = $conn->prepare("UPDATE agent_profiles SET subscription_status = 'active', subscription_plan_id = ? WHERE user_id = ?");
+                $stmt->execute([$plan_id, $user_id]);
+            }
 
             // Insert into transactions table
             $stmt = $conn->prepare("
@@ -170,9 +176,15 @@ switch ($eventType) {
             $stmt = $conn->prepare("UPDATE users SET subscription_status = 'active', subscription_plan_id = ? WHERE id = ?");
             $stmt->execute([$plan_id, $user_id]);
 
-            // Update players table if user is a player
-            $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
-            $stmt->execute([$plan_id, $user_id]);
+            if($user['role'] == 'user'){
+                // Update players table if user is a player
+                $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
+                $stmt->execute([$plan_id, $user_id]);
+            }elseif($user['role'] == 'agent'){
+                // Update agents table if user is a coach
+                $stmt = $conn->prepare("UPDATE agent_profiles SET subscription_status = 'active', subscription_plan_id = ? WHERE user_id = ?");
+                $stmt->execute([$plan_id, $user_id]);
+            }
 
             // Insert into transactions table
             $stmt = $conn->prepare("

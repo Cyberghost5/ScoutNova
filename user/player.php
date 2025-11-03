@@ -1,14 +1,18 @@
 <?php include 'include/session.php'; 
 $player_id = $_GET['id'] ?? 0;
-$stmt = $conn->prepare("SELECT * FROM players WHERE id=:userid");
+$player_id = preg_replace('/\.php$/', '', $player_id);
+
+$stmt = $conn->prepare("SELECT * FROM players WHERE uuid=:userid");
 $stmt->execute(['userid'=>$player_id]);
 $player = $stmt->fetch();
 
 if (!$player) {
     $_SESSION['error'] = 'Player not found.';
-    header('location: discover');
+    header('location: ../discover');
     exit();
 }
+
+$player_id = $player['id'];
 
 $increase_view_count = $player['id'];
 
@@ -24,7 +28,7 @@ $user_player = $stmt->fetch();
 
 if (!$user_player) {
   $_SESSION['error'] = 'User not found.';
-  header('location: videos');
+  header('location: ../home');
   exit();
 }
 ?>
@@ -110,7 +114,7 @@ if (!$user_player) {
               <div class="card tale-bg">
                 <div class="card-body box-profile">
                   <div class="text-center">
-                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo (!empty($player['profile_image'])) ? 'images/'.$player['profile_image'] : 'images/profile.jpg'; ?>" alt="User profile picture">
+                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo $settings['site_url']; ?>user/<?php echo (!empty($player['profile_image'])) ? 'images/'.$player['profile_image'] : 'images/profile.jpg'; ?>" alt="User profile picture">
                   </div>
 
                   <h3 class="profile-username text-center"><?php echo $user_player['username'];?><sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> </h3>
@@ -136,7 +140,7 @@ if (!$user_player) {
                   </ul>
                   <!-- <a href="new_message?user_id=<?= $player['user_id'] ?>" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-chat-outline"></i> Message</b></a> -->
                   <?php if($user['role'] == 'agent'): ?>
-                  <a href="watchlist_action?user_id=<?= $player['user_id'] ?>" class="btn btn-info btn-rounded btn-block"><b><i class="mdi mdi-account-multiple-outline"></i> Add to Watchlist</b></a>
+                  <a href="<?php echo $settings['site_url']; ?>user/watchlist_action?user_id=<?= $player['user_id'] ?>" class="btn btn-info btn-rounded btn-block"><b><i class="mdi mdi-account-multiple-outline"></i> Add to Watchlist</b></a>
                   <?php endif; ?>
                 </div>
               </div>
@@ -147,14 +151,14 @@ if (!$user_player) {
                 <div data-pws-tab="pod" data-pws-tab-name="POD" class="playerpod">
                   <?php
                   // Player stats
-                  $statsStmt = $conn->prepare("SELECT * FROM PlayerStats WHERE player_id = ?");
+                  $statsStmt = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");
                   $statsStmt->execute([$player_id]);
                   $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
 
                   // All video ratings
                   $ratingsStmt = $conn->prepare("
                       SELECT v.description, r.total_score, r.consistency_index, r.rating_breakdown, r.created_at
-                      FROM PODRatings r
+                      FROM podratings r
                       JOIN videos v ON v.id = r.video_id
                       WHERE r.player_id = ?
                       ORDER BY r.created_at ASC
@@ -404,7 +408,7 @@ if (!$user_player) {
                               <a class="image-tile col-xl-3 col-lg-3 col-md-3 col-md-4 col-6g glightbox text-decoration-none" data-gallery="videos" data-title="<?php echo $video['description']; ?>, Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?>, Analysis Status:</b> <?php echo $video_analysis; ?>" href="<?php echo $video['file_url']; ?>">
                                 <img src="<?php echo $thumbnail; ?>" alt="image" />
                                 <div class="demo-gallery-poster">
-                                  <img src="../assets/images/lightbox/play-button.png" alt="image">
+                                  <img src="<?php echo $settings['site_url']; ?>assets/images/lightbox/play-button.png" alt="image">
                                 </div>
                                 <small class="text-muted">Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?></small>
                                 <h6>Analysis Status: <?php echo $video_analysis; ?></h6>

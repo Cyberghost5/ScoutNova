@@ -13,7 +13,8 @@ if(!$user['verified']){
     exit;
 }
 
-if($_GET['action'] == 'cancel'){
+
+if(isset($_GET['action']) == 'cancel'){
   $conn = $pdo->open();
 
   $stmt = $conn->prepare("SELECT * FROM subscriptions WHERE user_email = ? AND status = 'active' LIMIT 1");
@@ -36,7 +37,7 @@ if($_GET['action'] == 'cancel'){
       $response = curl_exec($curl);
       curl_close($curl);
 
-      var_dump($response);
+      // var_dump($response);
       
       // Log the API response
       $stmt = $conn->prepare("
@@ -58,8 +59,18 @@ if($_GET['action'] == 'cancel'){
       $stmt->execute([$subscription['id']]);
 
       // Update the users table to remove subscription info
-      $stmt = $conn->prepare("UPDATE users SET subscription_plan_id = 1, subscription_status = NULL WHERE email = ?");
-      $stmt->execute([$user['email']]);
+      $stmt = $conn->prepare("UPDATE users SET subscription_plan_id = 1, subscription_status = 'cancelled' WHERE id = ?");
+      $stmt->execute([$user['id']]);
+
+      if($user['role'] == 'user'){
+        // Update players table if user is a player
+        $stmt = $conn->prepare("UPDATE players SET subscription_status = 'cancelled', subscription_plan_id = 1, featured = 1 WHERE user_id = ?");
+        $stmt->execute([$user['id']]);
+      }elseif($user['role'] == 'agent'){
+        // Update agents table if user is a coach
+        $stmt = $conn->prepare("UPDATE agent_profiles SET subscription_status = 'cancelled', subscription_plan_id = 1 WHERE user_id = ?");
+        $stmt->execute([$user['id']]);
+      }
 
       $_SESSION['success'] = 'Subscription cancelled successfully.';
       header('location: subscriptions');
@@ -153,7 +164,9 @@ if($_GET['action'] == 'cancel'){
   $stmt->execute([$user['id'], $response, 'Flutterwave Payment Initialization']);
 
   if ($err) {
-    echo "cURL Error #: " . $err;
+    $_SESSION['error'] = "cURL Error #: " . $err;
+    header('location: subscriptions');
+    exit;
   } else {
     $result = json_decode($response, true);
 

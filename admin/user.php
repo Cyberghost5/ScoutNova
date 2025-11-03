@@ -1,13 +1,10 @@
 <?php include 'includes/head.php';
  
-$agent_id = $_GET['id'] ?? 0;
-// $stmt = $conn->prepare("SELECT * FROM players WHERE id=:userid");
-// $stmt = $conn->prepare("SELECT * FROM agent_profiles WHERE id=:userid");
-// $stmt->execute(['userid'=>$agent_id]);
-// $agent = $stmt->fetch();
+$user_id = $_GET['id'] ?? 0;
+$user_id = preg_replace('/\.php$/', '', $user_id);
 
-$stmt = $conn->prepare("SELECT * FROM users WHERE id=:userid");
-$stmt->execute(['userid'=>$agent_id]);
+$stmt = $conn->prepare("SELECT * FROM users WHERE uuid=:userid");
+$stmt->execute(['userid'=>$user_id]);
 $user_agent = $stmt->fetch();
 
 if (!$user_agent) {
@@ -93,26 +90,26 @@ if (!$user_agent) {
                 //   $action = '<a href="#upgrade" data-toggle="modal" data-id="'.$user_agent['id'].'" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-upload"></i> Upgrade User</b></a>';
                 // }
                 
-                if ($user_agent['verification'] == 1) {
+                if ($user_agent['verified'] == 1) {
                     $kyc = '<span class="badge badge-success">Completed</span>';
                 }
-                if ($user_agent['verification'] == 0) {
+                if ($user_agent['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
 
 
-                // if ($user_agent['verification'] == 1) {
+                // if ($user_agent['verified'] == 1) {
                 //     $kyc = '<span class="badge badge-success">Passed</span>';
                 // }
-                // if ($user_agent['verification'] == 0) {
+                // if ($user_agent['verified'] == 0) {
                 //     $kyc = '<span class="badge badge-danger">Pending</span>';
                 // }
                 if ($user_agent['role'] == 'agent') {
-                    $user_agenttype = '<span class="badge badge-primary">Agent</span>';
+                    $user_agenttype = '<span class="badge badge-primary">Agent</span> <a href="../agent/'.$user_agent['uuid'].'"><i class="mdi mdi-eye"></i></a>';
                     $action = '<a href="#downgrade" data-toggle="modal" data-id="'.$user_agent['id'].'" class="btn btn-warning btn-rounded btn-block"><b>Change Account to Player</b></a>';
                 }
                 if ($user_agent['role'] == 'user') {
-                    $user_agenttype = '<span class="badge badge-info">Player</span>';
+                    $user_agenttype = '<span class="badge badge-info">Player</span> <a href="../player/'.$user_agent['uuid'].'"><i class="mdi mdi-eye"></i></a>';
                     $action = '<a href="#upgrade" data-toggle="modal" data-id="'.$user_agent['id'].'" class="btn btn-success btn-rounded btn-block"><b>Change Account to Agent</b></a>';
                 }                
               ?>
@@ -124,7 +121,7 @@ if (!$user_agent) {
               <div class="card tale-bg">
                 <div class="card-body box-profile">
                   <div class="text-center">
-                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo (!empty($user_agent['profile_image'])) ? '../user/images/'.$user_agent['profile_image'] : '../user/images/profile.jpg'; ?>" alt="User profile picture">
+                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo $settings['site_url']; ?>admin/<?php echo (!empty($user_agent['profile_image'])) ? '../user/images/'.$user_agent['profile_image'] : '../user/images/profile.jpg'; ?>" alt="User profile picture">
                   </div>
 
                   <h3 class="profile-username text-center"><?php echo $user_agent['username'];?><sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> </h3>

@@ -40,29 +40,29 @@ $now = date('d F, Y');
   <link rel="shortcut icon" type="image/x-icon" href="<?php echo $settings['site_url']; ?>assets/images/logo/logo.png">
   <meta name="msapplication-TileImage" content="<?php echo $settings['site_url']; ?>assets/images/logo/logo.png">
 
-  <link rel="stylesheet" href="../vendors/feather/feather.css">
-  <link rel="stylesheet" href="../vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" href="../vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/feather/feather.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
   <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../vendors/datatables.net-bs4/dataTables.bootstrap4.css" type="text/css" >
-  <link rel="stylesheet" href="../vendors/ti-icons/css/themify-icons.css" type="text/css" >
-  <link rel="stylesheet" href="../js/select.dataTables.min.css" type="text/css" >
-  <link rel="stylesheet" href="../vendors/mdi/css/materialdesignicons.min.css" type="text/css" >
-  <link rel="stylesheet" href="../vendors/select2/select2.min.css" type="text/css" >
-  <link rel="stylesheet" href="../vendors/select2-bootstrap-theme/select2-bootstrap.min.css" type="text/css" >
-  <link rel="stylesheet" href="../vendors/bootstrap-tagsinput/bootstrap-tagsinput.css" type="text/css" >
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/datatables.net-bs4/dataTables.bootstrap4.css" type="text/css" >
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/ti-icons/css/themify-icons.css" type="text/css" >
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>js/select.dataTables.min.css" type="text/css" >
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/mdi/css/materialdesignicons.min.css" type="text/css" >
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/select2/select2.min.css" type="text/css" >
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/select2-bootstrap-theme/select2-bootstrap.min.css" type="text/css" >
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/bootstrap-tagsinput/bootstrap-tagsinput.css" type="text/css" >
   <!-- End plugin css for this page -->
   <!-- plugin css for this page -->
-  <link rel="stylesheet" href="../vendors/codemirror/codemirror.css">
-  <link rel="stylesheet" href="../vendors/codemirror/ambiance.css">
-  <link rel="stylesheet" href="../vendors/pwstabs/jquery.pwstabs.min.css">
-  <link rel="stylesheet" href="../vendors/dropzone/dropzone.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/codemirror/codemirror.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/codemirror/ambiance.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/pwstabs/jquery.pwstabs.min.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/dropzone/dropzone.css">
 
-  <link rel="stylesheet" href="../vendors/quill/quill.snow.css">
-  <link rel="stylesheet" href="../vendors/simplemde/simplemde.min.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/quill/quill.snow.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>vendors/simplemde/simplemde.min.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
-  <link rel="stylesheet" href="../css/vertical-layout-light/style.css">
+  <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>css/vertical-layout-light/style.css">
 </head>
 <?php include 'format.php'; ?>

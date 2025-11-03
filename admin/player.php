@@ -2,15 +2,19 @@
 <?php include 'includes/head.php';
  
 $player_id = $_GET['id'] ?? 0;
-$stmt = $conn->prepare("SELECT * FROM players WHERE id=:userid");
+$player_id = preg_replace('/\.php$/', '', $player_id);
+
+$stmt = $conn->prepare("SELECT * FROM players WHERE uuid=:userid");
 $stmt->execute(['userid'=>$player_id]);
 $player = $stmt->fetch();
 
 if (!$player) {
     $_SESSION['error'] = 'Player not found.';
-    header('location: players');
+    header('location: ../discover');
     exit();
 }
+
+$player_id = $player['id'];
 
 $increase_view_count = $player['id'];
 
@@ -22,7 +26,7 @@ if (!isset($_SESSION["viewed_player_$increase_view_count"])) {
 
 $stmt = $conn->prepare("SELECT * FROM users WHERE id=:userid");
 $stmt->execute(['userid'=>$player['user_id']]);
-$user_player = $stmt->fetch();
+$user = $stmt->fetch();
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.1/css/glightbox.min.css" integrity="" crossorigin="anonymous" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -54,7 +58,7 @@ $user_player = $stmt->fetch();
             <div class="col-md-12 grid-margin">
               <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                  <h3 class="font-weight-bold"><?php echo $user_player['firstname']; ?> <?php echo $user_player['lastname']; ?></h3>
+                  <h3 class="font-weight-bold"><?php echo $user['firstname']; ?> <?php echo $user['lastname']; ?></h3>
                   <h6 class="font-weight-normal mb-0">A player on <?php echo $settings['site_name']; ?>.</h6>
                 </div>
               </div>
@@ -82,23 +86,23 @@ $user_player = $stmt->fetch();
                   unset($_SESSION['success']);
                 }
 
-                if ($user_player['verified'] == 1) {
+                if ($user['verified'] == 1) {
                     $kyc = '<span class="badge badge-success">Passed</span>';
                 }
-                if ($user_player['verified'] == 0) {
+                if ($user['verified'] == 0) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
-                if ($user_player['verified'] == 2) {
+                if ($user['verified'] == 2) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
-                if ($user_player['verified'] == 3) {
+                if ($user['verified'] == 3) {
                     $kyc = '<span class="badge badge-danger">Pending</span>';
                 }
-                if ($user_player['role'] == 'agent') {
-                    $user_playertype = '<span class="badge badge-primary">Agent</span>';
+                if ($user['role'] == 'agent') {
+                    $usertype = '<span class="badge badge-primary">Agent</span>';
                 }
-                if ($user_player['role'] == 'user') {
-                    $user_playertype = '<span class="badge badge-info">Player</span>';
+                if ($user['role'] == 'user') {
+                    $usertype = '<span class="badge badge-info">Player</span>';
                 }                
               ?>
             </div>
@@ -109,12 +113,12 @@ $user_player = $stmt->fetch();
               <div class="card tale-bg">
                 <div class="card-body box-profile">
                   <div class="text-center">
-                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo (!empty($player['profile_image'])) ? '../user/images/'.$player['profile_image'] : '../user/images/profile.jpg'; ?>" alt="User profile picture">
+                    <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo $settings['site_url']; ?>admin/<?php echo (!empty($player['profile_image'])) ? '../user/images/'.$player['profile_image'] : '../user/images/profile.jpg'; ?>" alt="User profile picture">
                   </div>
 
-                  <h3 class="profile-username text-center"><?php echo $user_player['username'];?><sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> </h3>
+                  <h3 class="profile-username text-center"><?php echo $user['username'];?><sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> </h3>
 
-                  <p class="text-muted text-center"><?php echo $user_player['firstname'].' '.$user_player['lastname']; ?></p>
+                  <p class="text-muted text-center"><?php echo $user['firstname'].' '.$user['lastname']; ?></p>
 
                   <ul class="list-group list-group-unbordered mb-3">
                     <li class="list-group-item">
@@ -133,10 +137,10 @@ $user_player = $stmt->fetch();
                       <b>Verification</b> <span class="float-right"> <?php echo $kyc; ?></span>
                     </li>
                     <li class="list-group-item">
-                      <b>User Type</b> <span class="float-right"> <?php echo $user_playertype; ?></span>
+                      <b>User Type</b> <span class="float-right"> <?php echo $usertype; ?></span>
                     </li>
                   </ul>
-                  <a href="new_message?user_id=<?= $player['user_id'] ?>" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-chat-outline"></i> Message</b></a>
+                  <a href="<?php echo $settings['site_url']; ?>admin/new_message?user_id=<?= $player['user_id'] ?>" class="btn btn-success btn-rounded btn-block"><b><i class="mdi mdi-chat-outline"></i> Message</b></a>
                   
                   <a href="#change_password" data-toggle="modal" class="btn btn-primary btn-rounded btn-block"><b>Change Password</b></a>
                   
@@ -344,28 +348,28 @@ $user_player = $stmt->fetch();
                     <div class="form-group row">
                       <label for="inputEmail" class="col-sm-2 col-form-label">Username</label>
                       <div class="col-sm-10">
-                        <input type="text" value="<?php echo $user_player['username']; ?>" class="form-control" id="inputEmail" placeholder="Email">
+                        <input type="text" value="<?php echo $user['username']; ?>" class="form-control" id="inputEmail" placeholder="Email">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label for="inputName" class="col-sm-2 col-form-label">Full Name</label>
                       <div class="col-sm-5">
-                        <input type="text" value="<?php echo $user_player['firstname']; ?>" class="form-control" id="inputName" placeholder="Name">
+                        <input type="text" value="<?php echo $user['firstname']; ?>" class="form-control" id="inputName" placeholder="Name">
                       </div>
                       <div class="col-sm-5">
-                        <input type="text" value="<?php echo $user_player['lastname']; ?>" class="form-control" id="inputName" placeholder="Name">
+                        <input type="text" value="<?php echo $user['lastname']; ?>" class="form-control" id="inputName" placeholder="Name">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                       <div class="col-sm-10">
-                        <input type="email" value="<?php echo $user_player['email']; ?>" class="form-control" id="inputEmail" placeholder="Email">
+                        <input type="email" value="<?php echo $user['email']; ?>" class="form-control" id="inputEmail" placeholder="Email">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label for="inputName2" class="col-sm-2 col-form-label">Phone No.</label>
                       <div class="col-sm-10">
-                        <input type="tel" value="<?php echo $user_player['contact_info']; ?>" class="form-control" id="inputName2" placeholder="Name">
+                        <input type="tel" value="<?php echo $user['contact_info']; ?>" class="form-control" id="inputName2" placeholder="Name">
                       </div>
                     </div>
                   </form>
@@ -382,7 +386,7 @@ $user_player = $stmt->fetch();
                             
                             // FETCH VIDEOS
                             $stmt = $conn->prepare("SELECT * FROM videos WHERE player_id = ? ORDER BY id DESC");
-                            $stmt->execute([$user_player['id']]);
+                            $stmt->execute([$player['id']]);
                             $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);    
                             ?>
                             
@@ -406,7 +410,7 @@ $user_player = $stmt->fetch();
                               <a class="image-tile col-xl-3 col-lg-3 col-md-3 col-md-4 col-6g glightbox text-decoration-none" data-gallery="videos" data-title="<?php echo $video['description']; ?>, Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?>, Analysis Status:</b> <?php echo $video_analysis; ?>" href="<?php echo $video['file_url']; ?>">
                                 <img src="<?php echo $thumbnail; ?>" alt="image" />
                                 <div class="demo-gallery-poster">
-                                  <img src="../assets/images/lightbox/play-button.png" alt="image">
+                                  <img src="<?php echo $settings['site_url']; ?>assets/images/lightbox/play-button.png" alt="image">
                                 </div>
                                 <small class="text-muted">Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?></small>
                               </a>
@@ -481,7 +485,7 @@ $user_player = $stmt->fetch();
                 <!--</div>-->
               </div>
               <hr>
-                <form action="reset-password-action" method="post">
+                <form action="<?php echo $settings['site_url']; ?>admin/reset-password-action" method="post">
                    <div class="form-group">
                     <small>Enter Old Password:</small>
                   <input type="password" class="form-control" id="curr_password" name="curr_password" placeholder="Input your old password to save changes" required>
@@ -518,14 +522,14 @@ $user_player = $stmt->fetch();
                   <div class="card">
                     <div class="card-body text-center">
                         <p class="card-title">Are you sure you want to delete this account?</p>
-                        <h2><?php echo $user_player['username']; ?></h2>
+                        <h2><?php echo $user['username']; ?></h2>
                         <small>Note: This action is not revertable!</small>
                     </div>
                   </div>
                 </div>
               </div>
-            <form action="del-account" method="post">
-            <input type="hidden" name="id" value="<?php echo $user_player['id']; ?>">
+            <form action="<?php echo $settings['site_url']; ?>admin/del-account" method="post">
+            <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
           	</div>
           	<div class="modal-footer justify-content-between">
             	<button type="button" class="btn btn-success btn-rounded btn-flat" data-dismiss="modal"><i class="mdi mdi-window-close"></i> No, don't delete</button>

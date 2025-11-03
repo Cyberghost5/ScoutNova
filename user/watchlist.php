@@ -62,23 +62,10 @@ if($user['profile_set'] == 0){
 
           // Suppose the logged-in user ID is 1 (Alexander for now)
           $logged_in_user_id = $user['id'];
-
-          $stmt = $conn->prepare("
-              SELECT 
-                  p.id AS player_id,
-                  u.*,
-                  p.*,
-                  pod.*,
-                  w.*
-              FROM watchlist w
-              JOIN players p ON w.player_id = p.id
-              JOIN users u ON p.user_id = u.id
-              LEFT JOIN PODRatings pod ON pod.player_id = p.id
-              WHERE w.agent_id = ?
-              ORDER BY w.created_at DESC
-          ");
+          $stmt = $conn->prepare("SELECT * FROM watchlist WHERE agent_id = ? ORDER BY created_at DESC");
           $stmt->execute([$logged_in_user_id]);
           $watchlists = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
           ?>
 
           <div class="row">
@@ -109,31 +96,46 @@ if($user['profile_set'] == 0){
                           </tr>
                         </thead>
                         <tbody>
-                          <?php foreach ($watchlists as $watchlist): ?>
+                          <?php foreach ($watchlists as $watchlist): 
+                          
+                          $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+                          $stmt->execute([$watchlist['player_id']]);
+                          $user_player = $stmt->fetch(PDO::FETCH_ASSOC);
+                          
+                          $stmt = $conn->prepare("SELECT * FROM players WHERE user_id = ?");
+                          $stmt->execute([$user_player['id']]);
+                          $player = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                          $stmt = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");
+                          $stmt->execute([$player['id']]);
+                          $playerstats = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+                          ?>
                           <tr>
                             <td class="py-1 ps-0">
                               <div class="d-flex align-items-center">
-                                <img src="<?php echo (!empty($watchlist['photo'])) ? 'images/'.$watchlist['photo'] : 'images/profile.jpg'; ?>" alt="profile" class="mr-3">
+                                <img src="<?php echo (!empty($user['photo'])) ? 'images/'.$user['photo'] : 'images/profile.jpg'; ?>" alt="profile" class="mr-3">
                                 <div class="ms-3">
-                                  <p class="mb-0"><a href="player?id=<?php echo $watchlist['player_id']; ?>"><?php echo $watchlist['firstname'] . ' ' . $watchlist['lastname']; ?></p>
+                                  <p class="mb-0"><a href="<?php echo $settings['site_url']; ?>user/player/<?php echo $player['uuid']; ?>"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?></p>
                                   <p class="mb-0 text-muted text-small">
-                                    <?= htmlspecialchars($watchlist['country'] . ' | ' . (new DateTime())->diff(new DateTime(($watchlist['dob'])))->y); ?> years old
+                                    <?= htmlspecialchars($player['country'] . ' | ' . (new DateTime())->diff(new DateTime(($player['dob'])))->y); ?> years old
                                   </p>
                                   <small class="text-muted">Added to watchlist on <?= date('M j, Y', strtotime($watchlist['created_at'])) ?></small>
                                 </div>
                               </div>
                             </td>
                             <td>
-                              <?= $watchlist['total_score'] ?: 'N/A' ?>
+                              <?= $playerstats['average_score'] ?: 'N/A' ?>
                             </td>
                             <td>
-                              <?= ucfirst($watchlist['category'] ?? 'N/A') ?>
+                              <?= ucfirst($player['game_type'] ?? 'N/A') ?>
                             </td>
                             <td>
-                              <?= $watchlist['consistency_index'] ? $watchlist['consistency_index'].'%' : 'N/A' ?>
+                              <?= $playerstats['average_consistency'] ? $playerstats['average_consistency'].'%' : 'N/A' ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="player?id=<?= $watchlist['player_id'] ?>"><i class="mdi mdi-eye"></i> View</a>
+                              <a class="btn btn-sm btn-outline-success" href="<?php echo $settings['site_url']; ?>user/player/<?php echo $player['uuid']; ?>"><i class="mdi mdi-eye"></i> View</a>
                               <a class="btn btn-sm btn-outline-danger" href="watchlist_delete_action?player_id=<?= $watchlist['player_id'] ?>"><i class="mdi mdi-delete"></i> Remove</a>
                             </td>
                           </tr>

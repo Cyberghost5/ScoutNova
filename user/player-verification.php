@@ -96,7 +96,6 @@ if (!$player) {
                       // 0 is not started verify, 1 is verified, 2 is rejected, 3 is pending approval
                       if($user['verified'] === 2 || $user['verified'] === 0): ?>  
                       <form method="post" action="player-verification-submit.php" enctype="multipart/form-data" class="card p-4">
-                        <input type="hidden" name="player_id" value="<?= htmlspecialchars($user['id']) ?>">
                         
                         <div class="mb-3">
                           <label class="form-label">Full Name <small class="text-muted">(Surname first)</small></label>

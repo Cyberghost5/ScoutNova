@@ -87,7 +87,7 @@
                               <td>".$row['plan_id']."</td>
                               <td>".$row['currency']." ".$row['amount']."</td>
                               <td>".$row['intervals']."</td>
-                              <td>".$row['details']."</td>
+                              <td><button class='btn btn-primary btn-small btn-rounded details' data-id='".$row['id']."'>View</button></td>
                               <td>".date('M d, Y', strtotime($row['created_at']))."</td>
                               <td>
                                 <button class='btn btn-danger btn-sm delete btn-rounded' data-id='".$row['id']."'><i class='mdi mdi-delete'></i> Delete</button>
@@ -141,8 +141,9 @@
       getRow(id);
     });
 
-    $(document).on('click', '.status', function(e){
+    $(document).on('click', '.details', function(e){
       e.preventDefault();
+      $('#details1').modal('show');
       var id = $(this).data('id');
       getRow(id);
     });
@@ -166,6 +167,7 @@
         $('#edit_details').val(response.details);
         $('#edit_status').val(response.status);
         $('.fullname').html(response.name+' - '+response.intervals);
+        $('.fulldetails').html(response.details);
       }
     });
   }

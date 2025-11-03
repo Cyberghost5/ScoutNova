@@ -39,7 +39,7 @@ try {
             ->execute([$record['player_id']]);
     }
 
-  } elseif ($type === 'scout') {
+  } elseif ($type === 'scout/agent') {
     $stmt = $conn->prepare("SELECT scout_id FROM scout_verifications WHERE id = ?");
     $stmt->execute([$id]);
     $record = $stmt->fetch(PDO::FETCH_ASSOC);

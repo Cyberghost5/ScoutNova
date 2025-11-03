@@ -79,6 +79,14 @@
                           $stmt->execute();
                           $i = 0;
                           foreach($stmt as $row){
+                            if ($row['role'] == 'user') {
+                              $type = '<div class="badge badge-primary">Player</div>';
+                              $link = 'player/'.$row['uuid'];
+                            }
+                            if ($row['role'] == 'agent') {
+                              $type = '<div class="badge badge-info">Agent</div>';
+                              $link = 'agent/'.$row['uuid'];
+                            }
                             $i++;
                             $image = (!empty($row['photo'])) ? '/user/images/'.$row['photo'] : '/user/images/profile.jpg';
                             $status = ($row['status']) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Not Verified</span>';
@@ -89,11 +97,11 @@
                               <td class='py-1'><img src='".$settings['site_url']."".$image."' class='img-thumbnail m-2' height='100px' width='100px' style='border-radius:50%;'></td>
                               <td>".$row['username']."</td>
                               <td>".$row['firstname']." ".$row['lastname']."</td>
-                              <td>".$row['role']."</td>
+                              <td>".$type." <a href=".$link."><i class='mdi mdi-eye'></i></a> </td>
                               <td>".$row['email']."</td>
                               <td>".date('M d, Y', strtotime($row['date_created']))."</td>
                               <td>
-                                <a class='btn btn-info btn-sm btn-rounded' href='user?id=".$row['id']."'><i class='mdi mdi-eye'></i> View</a>
+                                <a class='btn btn-info btn-sm btn-rounded' href='user/".$row['uuid']."'><i class='mdi mdi-eye'></i> View</a>
                                 <button class='btn btn-success btn-sm edit btn-rounded' data-id='".$row['id']."'><i class='mdi mdi-pencil'></i> Edit</button>
                                 <button class='btn btn-danger btn-sm delete btn-rounded' data-id='".$row['id']."'><i class='mdi mdi-delete'></i> Delete</button>
                               </td>
@@ -173,6 +181,7 @@
         $('#edit_firstname').val(response.firstname);
         $('#edit_lastname').val(response.lastname);
         $('#edit_username').val(response.username);
+        $('#edit_role').val(response.role);
         $('#edit_address').val(response.address);
         $('#edit_contact').val(response.contact_info);
         $('.fullname').html(response.firstname+' '+response.lastname);

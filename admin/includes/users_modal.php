@@ -30,6 +30,13 @@
               <input type="text" class="form-control" id="lastname" name="lastname" required>
             </div>
             <div class="form-group">
+              <label for="role" class="col-sm-3 control-label">Role</label>
+              <select name="role" id="role" class="form-control" required>
+                <option value="user">Player</option>
+                <option value="agent">Scout/Agent</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label for="address" class="col-sm-3 control-label">Address</label>
               <textarea class="form-control" id="address" name="address"></textarea>
             </div>
@@ -75,16 +82,19 @@
                 <input type="email" class="form-control" id="edit_email" name="email">
               </div>
               <div class="form-group">
-                <label for="edit_password" class="col-sm-3 control-label">Password</label>
-                <input type="password" class="form-control" id="edit_password" name="password">
-              </div>
-              <div class="form-group">
                 <label for="edit_firstname" class="col-sm-3 control-label">Firstname</label>
                 <input type="text" class="form-control" id="edit_firstname" name="firstname">
               </div>
               <div class="form-group">
                 <label for="edit_lastname" class="col-sm-3 control-label">Lastname</label>
                 <input type="text" class="form-control" id="edit_lastname" name="lastname">
+              </div>
+              <div class="form-group">
+                <label for="edit_role" class="col-sm-3 control-label">Role</label>
+                <select name="role" id="edit_role" class="form-control" required>
+                  <option value="user">Player</option>
+                  <option value="agent">Scout/Agent</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="edit_address" class="col-sm-3 control-label">Address</label>
