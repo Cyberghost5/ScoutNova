@@ -1,5 +1,5 @@
 # # --- Environment files ---
-# .htaccess
+.htaccess
 include/global.php
 
 # # --- Dependency folders ---
