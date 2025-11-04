@@ -50,7 +50,7 @@
         <ul class='data-details-list'>
           <li>
             <div class='data-details-head'>Username - ID</div>
-            <div class='data-details-des'><b><a href='../user/".$iow['uuid']."'>".$iow['username']." - ".$iow['id']."</a></b></div>
+            <div class='data-details-des'><b><a href='../user/".$iow['uuid']."'>".$iow['username']." - ".$iow['uuid']."</a></b></div>
           </li>
 
           <li>
