@@ -196,7 +196,7 @@ $('#chat-form').on('submit', function(e) {
   });
 });
 
-// setInterval(loadMessages, 2000);
+setInterval(loadMessages, 2000);
 loadMessages();
 </script>
 </body>
