@@ -1,9 +1,5 @@
 # --- Environment files ---
-.htaccess
 include/global.php
 
 # --- Dependency folders ---
-vendor/
-user/images
-user/upload
 include/
