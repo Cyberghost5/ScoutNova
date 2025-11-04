@@ -67,6 +67,17 @@
       <a class="nav-link" href="<?php echo $settings['site_url']; ?>admin/videos">
         <i class="mdi mdi-cloud-upload menu-icon"></i>
         <span class="menu-title">Video Reviews</span>
+        <?php
+           $stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM videos WHERE status = 0");
+           $stmt->execute();
+           $vidoes_yet_to_be_done =  $stmt->fetch();
+
+           if ($vidoes_yet_to_be_done['numrows'] == 0) {
+             echo "";
+           }else {
+             echo "<span class='badge badge-danger right fs-3'>".number_format_short($vidoes_yet_to_be_done['numrows'])."</span>";
+           }
+        ?>
       </a>
     </li>
 

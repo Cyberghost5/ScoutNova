@@ -34,17 +34,19 @@ $chat = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($chat) {
     // Chat exists → go to messages
-    header("Location: messages-details?chat_id=" . $chat['id']);
+    header("Location: message/" . $chat['id']);
     exit;
 }
 
 // Step 2: Create a new chat
-$sql = "INSERT INTO chats (user1_id, user2_id, created_at) VALUES (?, ?, NOW())";
+$uuid = generateHexUUID();
+$sql = "INSERT INTO chats (uuid, user1_id, user2_id, created_at) VALUES (?, ?, ?, NOW())";
 $stmt = $conn->prepare($sql);
-$stmt->execute([$logged_in_user_id, $other_user_id]);
+$stmt->execute([$uuid, $logged_in_user_id, $other_user_id]);
 
 $new_chat_id = $conn->lastInsertId();
 
 // Redirect to messages page
-header("Location: messages-details?chat_id=$new_chat_id");
+header("Location: message/$new_chat_id");
+// header("Location: message/$uuid");
 exit;

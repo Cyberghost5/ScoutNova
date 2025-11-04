@@ -5,6 +5,7 @@ header('Content-Type: application/json');
 try {
     $player_id = $_POST['player_id'];
     $video_id = $_POST['video_id'];
+    $video_uuid = $_POST['video_uuid'];
     $category = $_POST['category'];
     $source = $_POST['source'];
 
@@ -146,7 +147,7 @@ try {
     $updateVideo->execute([$total_score, $video_id]);
 
     $_SESSION['success'] = "POD rating updated successfully.";
-    header('Location: video?id=' . $video_id);
+    header('Location: video/' . $video_uuid);
     exit();
 
 } catch (Exception $e) {

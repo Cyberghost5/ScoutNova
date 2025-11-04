@@ -165,7 +165,7 @@ if($user['profile_set'] == 0){
                                   <?php echo $public_status; ?>
                                 </td>
                                 <td>
-                                  <a class="btn btn-sm btn-outline-success" href="video?id=<?= $video['id'] ?>"><i class="mdi mdi-eye"></i> View</a>
+                                  <a class="btn btn-sm btn-outline-success" href="video/<?= $video['uuid'] ?>"><i class="mdi mdi-eye"></i> View</a>
                                 </td>
                               </tr>
                               <?php endforeach; ?>

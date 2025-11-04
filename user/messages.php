@@ -65,7 +65,7 @@ if($user['profile_set'] == 0){
           // Get all chats the user is part of
          $sql = "
         SELECT 
-          c.id AS chat_id,
+          c.id AS chat_id, c.uuid AS chat_uuid,
           IF(c.user1_id = ?, u2.firstname, u1.firstname) AS firstname,
           IF(c.user1_id = ?, u2.lastname, u1.lastname) AS lastname,
           IF(c.user1_id = ?, u2.type, u1.type) AS usertype2,
@@ -146,7 +146,7 @@ if($user['profile_set'] == 0){
                               <?php endif; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="message?chat_id=<?= $chat['chat_id'] ?>"><i class="mdi mdi-chat-outline"></i> View</a>
+                              <a class="btn btn-sm btn-outline-success" href="message/<?= $chat['chat_uuid'] ?>"><i class="mdi mdi-chat-outline"></i> View</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>

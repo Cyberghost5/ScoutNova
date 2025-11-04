@@ -117,7 +117,12 @@ if (!$user_player) {
                     <img class="profile-user-img img-fluid img-circle mb-4" src="<?php echo $settings['site_url']; ?>user/<?php echo (!empty($player['profile_image'])) ? 'images/'.$player['profile_image'] : 'images/profile.jpg'; ?>" alt="User profile picture">
                   </div>
 
-                  <h3 class="profile-username text-center"><?php echo $user_player['username'];?><sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> </h3>
+                  <h3 class="profile-username text-center"><?php echo $user_player['username'];?>
+                  <?php
+                  if ($user_player['subscription_status'] == 'active'): ?>
+                  <sup><i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size:10px;"></i></sup> 
+                  <?php endif; ?>
+                  </h3>
 
                   <p class="text-muted text-center"><?php echo $user_player['firstname'].' '.$user_player['lastname']; ?></p>
 

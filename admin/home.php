@@ -311,7 +311,7 @@
                                 <div class="ms-3">
                                   <p class="mb-0"><a href="<?php echo $settings['site_url']; ?>admin/agent/<?php echo $agent['uuid']; ?>"><?php echo $agent['firstname'] . ' ' . $agent['lastname']; ?></p>
                                   <p class="mb-0 text-muted text-small">
-                                    <?= htmlspecialchars($agent['country'] . ' | ' . ($agent['organization'])); ?> years old
+                                    <?= htmlspecialchars($agent['country'] . ' | ' . ($agent['organization'])); ?>
                                   </p>
                                 </div>
                               </div>

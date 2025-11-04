@@ -14,9 +14,13 @@ RewriteRule ^admin/player/([^/]+)$ admin/player.php?id=$1 [L,QSA]
 RewriteRule ^admin/agent/([^/]+)$ admin/agent.php?id=$1 [L,QSA]
 RewriteRule ^admin/user/([^/]+)$ admin/user.php?id=$1 [L,QSA]
 RewriteRule ^admin/transaction/([^/]+)$ admin/transaction.php?order_id=$1 [L,QSA]
+RewriteRule ^admin/video/([^/]+)$ admin/video.php?id=$1 [L,QSA]
+RewriteRule ^admin/message/([^/]+)$ admin/message.php?chat_id=$1 [L,QSA]
 
 # ./user/
 RewriteRule ^user/player/([^/]+)$ user/player.php?id=$1 [L,QSA]
+RewriteRule ^user/video/([^/]+)$ user/video.php?id=$1 [L,QSA]
+RewriteRule ^user/message/([^/]+)$ user/message.php?chat_id=$1 [L,QSA]
 
 <Files .htaccess>
 Order allow,deny

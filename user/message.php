@@ -1,8 +1,9 @@
 <?php include 'include/session.php'; 
 $chat_id = $_GET['chat_id'] ?? 0;
+$chat_id = preg_replace('/\.php$/', '', $chat_id);
 
 $query = "
-  SELECT c.*, 
+  SELECT c.*, c.uuid AS chat_uuid, c.id AS chat_id,
   u1.firstname AS user1_firstname, 
   u1.lastname AS user1_lastname, 
   u1.photo AS user1_photo, 
@@ -12,12 +13,12 @@ $query = "
   FROM chats c
   JOIN users u1 ON c.user1_id = u1.id
   JOIN users u2 ON c.user2_id = u2.id
-  WHERE c.id = ?
+  WHERE (c.id = ?) OR  (c.uuid = ?)
   ORDER BY c.id ASC
 ";
 
 $result = $conn->prepare($query);
-$result->execute([$chat_id]);
+$result->execute([$chat_id, $chat_id]);
 $row = $result->fetch(PDO::FETCH_ASSOC);
 
 if (!$row) {
@@ -26,16 +27,19 @@ if (!$row) {
   exit();
 }
 
+$chat_uuid = $row['chat_uuid'];
+$chat_id = $row['chat_id'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'includes/head.php'; 
 if($user['profile_set'] == 0){
-  echo "<script>window.location.assign('set-profile')</script>"; 
+  echo "<script>window.location.assign('../set-profile')</script>"; 
   exit;
     // header('location: set-profile');
 };?> 
-<link rel="stylesheet" href="../css/chat.css">
+<link rel="stylesheet" href="<?php echo $settings['site_url']; ?>css/chat.css">
 <body class="sidebar-dark">
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
@@ -113,6 +117,7 @@ if($user['profile_set'] == 0){
                             <div class="input-group">
                               <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
                               <input type="hidden" name="chat_id" value="<?= htmlspecialchars($chat_id) ?>">
+                              <input type="hidden" name="chat_uuid" value="<?= htmlspecialchars($chat_uuid) ?>">
                               <input type="text" name="message" id="message" placeholder="Type Message ..." class="form-control">
                               <span class="input-group-append">
                                 <button type="submit" class="btn btn-primary">Send</button>
@@ -169,7 +174,7 @@ function formatTimestamp(timestamp) {
 }
 
 function loadMessages() {
-  $.get('fetch_messages', { chat_id: <?= (int)$chat_id ?> }, function(data) {
+  $.get('../fetch_messages', { chat_id: <?= (int)$chat_id ?> }, function(data) {
     let messages = JSON.parse(data);
     let html = '';
     // console.log(messages); // Debugging line
@@ -182,13 +187,13 @@ function loadMessages() {
       let imagepath = '';
       if (msg.role === 'admin') {
         role = 'Admin';
-        imagepath = '../admin/images/'; 
+        imagepath = '../../admin/images/'; 
       }else if (msg.role === 'user') {
         role = 'Player';
-        imagepath = 'images/'; 
+        imagepath = '../images/'; 
       } else if (msg.role === 'agent') {
         role = 'Agent';
-        imagepath = 'images/'; 
+        imagepath = '../images/'; 
       }
 
       html += `
@@ -209,7 +214,7 @@ function loadMessages() {
 
 $('#chat-form').on('submit', function(e) {
   e.preventDefault();
-  $.post('send_message', $(this).serialize(), function(data) {
+  $.post('../send_message', $(this).serialize(), function(data) {
     $('#message').val('');
     loadMessages();
   });

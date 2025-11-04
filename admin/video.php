@@ -1,13 +1,14 @@
 <?php include 'includes/head.php'; 
 $video_id = $_GET['id'] ?? 0;
+$video_id = preg_replace('/\.php$/', '', $video_id);
 
-$stmt = $conn->prepare("SELECT * FROM videos WHERE id=:id");
+$stmt = $conn->prepare("SELECT * FROM videos WHERE uuid=:id");
 $stmt->execute(['id'=>$video_id]);
 $video = $stmt->fetch();
 
 if (!$video) {
   $_SESSION['error'] = 'Video not found.';
-  header('location: videos');
+  header('location: ../videos');
   exit();
 }
 
@@ -15,9 +16,21 @@ $stmt = $conn->prepare("SELECT * FROM players WHERE user_id=:id");
 $stmt->execute(['id'=>$video['player_id']]);
 $player = $stmt->fetch();
 
+if (!$player) {
+  $_SESSION['error'] = 'Player not found.';
+  header('location: ../videos');
+  exit();
+}
+
 $stmt = $conn->prepare("SELECT * FROM users WHERE id=:id");
 $stmt->execute(['id'=>$player['user_id']]);
 $user = $stmt->fetch();
+
+if (!$user) {
+  $_SESSION['error'] = 'User not found.';
+  header('location: ../videos');
+  exit();
+}
 
 ?>
 <!-- Plugin css for this page -->
@@ -105,7 +118,7 @@ $user = $stmt->fetch();
 
                   <p>Video ID: <br> <?php echo $video['video_id']; ?></p><br>
                   
-                  <p>Uploaded by: <br> <a href="player?id=<?php echo $player['id']; ?>"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?></a></p><br>
+                  <p>Uploaded by: <br> <a href="<?php echo $settings['site_url']; ?>admin/player/<?php echo $player['uuid']; ?>"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?></a></p><br>
                   
                   <p>Video Description: <br> <?php echo $video['description']; ?></p><br>
 
@@ -113,8 +126,8 @@ $user = $stmt->fetch();
                   <div class="dropdown d-inline-block">
                     <a href="#" class="text-secondary" data-toggle="dropdown"><i class="mdi mdi-pencil"></i></a>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item" href="update_video_status?id=<?= $video['id'] ?>&status=1">Public</a>
-                      <a class="dropdown-item" href="update_video_status?id=<?= $video['id'] ?>&status=0">Private</a>
+                      <a class="dropdown-item" href="<?php echo $settings['site_url']; ?>admin/update_video_status?id=<?= $video['uuid'] ?>&status=1">Public</a>
+                      <a class="dropdown-item" href="<?php echo $settings['site_url']; ?>admin/update_video_status?id=<?= $video['uuid'] ?>&status=0">Private</a>
                     </div>
                   </div>
                   </p><br>
@@ -126,7 +139,7 @@ $user = $stmt->fetch();
                     <a class="image-tile col-xl-3 col-lg-3 col-md-3 col-md-4 col-6g glightbox" data-gallery="videos" data-title="<?php echo $video['description']; ?>, Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?>" href="<?php echo $video['file_url']; ?>">
                       <img src="<?php echo $thumbnail; ?>" alt="image" />
                       <div class="demo-gallery-poster">
-                        <img src="../assets/images/lightbox/play-button.png" alt="image">
+                        <img src="<?php echo $settings['site_url']; ?>assets/images/lightbox/play-button.png" alt="image">
                       </div>
                     </a>
                   </div>
@@ -145,7 +158,7 @@ $user = $stmt->fetch();
                         SELECT v.*, r.total_score, r.consistency_index, r.rating_breakdown, r.category
                         FROM videos v
                         LEFT JOIN PODRatings r ON v.id = r.video_id
-                        WHERE v.id = ?
+                        WHERE v.uuid = ?
                     ");
                     $stmt->execute([$video_id]);
                     $video = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -243,7 +256,7 @@ $user = $stmt->fetch();
                             <h5 class="modal-title" id="manualModalLabel">Manual Rating Entry</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                           </div>
-                          <form id="manualForm" class="form-horizontal" method="POST" action="update_pod">
+                          <form id="manualForm" class="form-horizontal" method="POST" action="<?php echo $settings['site_url']; ?>admin/update_pod">
                             <div class="modal-body">
                               <div class="g-3">
                                 <div class="form-group">
@@ -287,6 +300,7 @@ $user = $stmt->fetch();
                               <input type="hidden" name="source" value="Manual">
                               <input type="hidden" name="ai_confidence" value="">
                               <input type="hidden" name="video_id" value="<?php echo $video['id']; ?>">
+                              <input type="hidden" name="video_uuid" value="<?php echo $video['uuid']; ?>">
                               <input type="hidden" name="player_id" value="<?php echo $player['id']; ?>">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                               <button type="submit" class="btn btn-primary">Submit Rating</button>

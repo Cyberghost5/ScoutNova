@@ -8,7 +8,7 @@ $logged_in_user_id = $admin['id'];
 // Get all chats the user is part of
 $sql = "
           SELECT 
-            c.id AS chat_id,
+            c.id AS chat_id, c.uuid AS chat_uuid,
             u1.firstname AS user1_firstname,
             u1.lastname AS user1_lastname,
             u2.firstname AS user2_firstname,
@@ -126,7 +126,7 @@ $sql = "
                           <tr>
                             <td class="py-1 ps-0">
                               <div class="d-flex align-items-center">
-                                <img src="<?php echo (!empty($chat['photo'])) ? 'images/'.$chat['photo'] : 'images/profile.jpg'; ?>" alt="profile" class="mr-3">
+                                <img src="<?php echo $settings['site_url']; ?>user/<?php echo (!empty($chat['photo'])) ? 'images/'.$chat['photo'] : 'images/profile.jpg'; ?>" alt="profile" class="mr-3">
                                 <div class="ms-3">
                                   <p class="mb-0"><?php echo $chat['user1_firstname'] . ' ' . $chat['user1_lastname']; ?> & <?php echo $chat['user2_firstname'] . ' ' . $chat['user2_lastname']; ?></p>
                                   <p class="mb-0 text-muted text-small">
@@ -145,7 +145,7 @@ $sql = "
                               <?php endif; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="messages-details?chat_id=<?= $chat['chat_id'] ?>"><i class="mdi mdi-chat-outline"></i> Message</a>
+                              <a class="btn btn-sm btn-outline-success" href="message/<?= $chat['chat_uuid'] ?>"><i class="mdi mdi-chat-outline"></i> Message</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>

@@ -96,14 +96,15 @@ try {
 				//generate code
 				$set = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 				$code = substr(str_shuffle($set), 0, 12);
-
+				
+				$uuid = generateHexUUID();
 
 				if(true)
 				{
 					try{
 						// Insert new user into DB
-						$stmt = $conn->prepare("INSERT INTO users (username, firstname, lastname, role, email, contact_info, password, activate_code, created_on) VALUES (:username, :firstname, :lastname, :role, :email, :phone, :password, :code, :now)");
-						$stmt->execute(['username'=>$username, 'firstname'=>$firstname, 'lastname'=>$lastname, 'role'=>$role, 'email'=>$email, 'phone'=>$phone, 'password'=>$password, 'code'=>$code, 'now'=>$now]);
+						$stmt = $conn->prepare("INSERT INTO users (uuid, username, firstname, lastname, role, email, contact_info, password, activate_code, created_on) VALUES (:uuid, :username, :firstname, :lastname, :role, :email, :phone, :password, :code, :now)");
+						$stmt->execute(['uuid'=>$uuid, 'username'=>$username, 'firstname'=>$firstname, 'lastname'=>$lastname, 'role'=>$role, 'email'=>$email, 'phone'=>$phone, 'password'=>$password, 'code'=>$code, 'now'=>$now]);
 						$userid = $conn->lastInsertId();
 
 						$message = "

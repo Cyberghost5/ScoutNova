@@ -78,13 +78,15 @@
                 <div class="col-md-6 mb-4">
                   <div class="card shadow-sm border-0">
                     <div class="card-body">
-                      <h5><?= htmlspecialchars($v['firstname'].' '.$v['lastname']) ?> <span class="badge bg-secondary"><?= ucfirst($v['type']) ?></span></h5>
+                      <h5><?= htmlspecialchars($v['firstname'].' '.$v['lastname']) ?> <span class="badge badge-primary"><?= ucfirst($v['type']) ?></span></h5>
                       <p class="mb-2"><b>Submitted:</b> <?= date('M d, Y', strtotime($v['created_at'])) ?></p>
 
                       <?php if ($v['type'] == 'player'): ?>
                         <ul class="list-unstyled">
                           <li><b>ID Document:</b> <a href="<?= $v['official_id_url'] ?>" target="_blank">View</a></li>
+                          <?php if ($v['parent_consent']): ?>
                           <li><b>Parent Consent:</b> <a href="<?= $v['parent_consent'] ?>" target="_blank">View</a></li>
+                          <?php endif; ?>
                           <?php if ($v['team_affiliated']): ?>
                             <li><b>Team Proof:</b> <a href="<?= $v['team_proof_url'] ?>" target="_blank">View</a></li>
                           <?php endif; ?>

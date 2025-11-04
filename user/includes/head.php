@@ -1,10 +1,16 @@
 <?php
 date_default_timezone_set("Africa/Lagos");
 $now = date('d F, Y');
+
+if($user['role'] == 'agent'){
+  $site_title_user_role = "Agent";
+}elseif($user['role'] == 'user'){
+  $site_title_user_role = "Player";
+}
 ?>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title><?php echo $settings['site_name']; ?> | User</title>
+  <title><?php echo $settings['site_name']." | ".$site_title_user_role; ?></title>
   <meta name="description" content="<?php echo $settings['site_desc']; ?>">
   <meta name="keyword" content="<?php echo $settings['site_keyword']; ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">

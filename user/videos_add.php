@@ -38,6 +38,8 @@
         $player_id = $user['id'];
         $video_id = "#VID_" . uniqid();
 
+        $uuid = generateHexUUID();
+
 		$conn = $pdo->open();
 
             $upload_type = $settings['upload_type']; //'local';
@@ -106,8 +108,8 @@
 
                 // Send email notification to admin (optional)
 
-                $stmt = $conn->prepare("INSERT INTO videos (video_id, full_link, description, file_url, player_id, upload_type, thumbnail_url, cloudinary_public_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$video_id, $full_link, $detail, $videoUrl, $player_id, $upload_type, $thumbnailUrl, $public_id]);
+                $stmt = $conn->prepare("INSERT INTO videos (uuid, video_id, full_link, description, file_url, player_id, upload_type, thumbnail_url, cloudinary_public_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$uuid, $video_id, $full_link, $detail, $videoUrl, $player_id, $upload_type, $thumbnailUrl, $public_id]);
                 // echo "<div style='color: green;'>✅ Upload successful! Video: <a href='$videoUrl' target='_blank'>$videoUrl</a></ div>";
                 $_SESSION['success'] = 'Video added successfully';
                 header('location: videos');

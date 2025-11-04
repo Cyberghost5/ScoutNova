@@ -141,7 +141,7 @@
                               </div>
                             </td>
                             <td class="py-1 ps-0">
-                              <p class="mb-0"><a href="player?id=<?php echo $player['id']; ?>"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?></a></p>
+                              <p class="mb-0"><a href="player/<?php echo $player['uuid']; ?>"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?></a></p>
                               <p class="mb-0 text-muted text-small">
                                 <?php if (!empty($video['created_at'])): ?>
                                   <?= date("M j, g:i a", strtotime($video['created_at'])) ?>
@@ -155,7 +155,7 @@
                               <?php echo $public_status; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="video?id=<?= $video['id'] ?>"><i class="mdi mdi-eye"></i> View</a>
+                              <a class="btn btn-sm btn-outline-success" href="video/<?= $video['uuid'] ?>"><i class="mdi mdi-eye"></i> View</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>

@@ -1,13 +1,14 @@
 <?php include 'include/session.php'; 
 $video_id = $_GET['id'] ?? 0;
+$video_id = preg_replace('/\.php$/', '', $video_id);
 
-$stmt = $conn->prepare("SELECT * FROM videos WHERE id=:id");
+$stmt = $conn->prepare("SELECT * FROM videos WHERE uuid=:id");
 $stmt->execute(['id'=>$video_id]);
 $video = $stmt->fetch();
 
 if (!$video) {
   $_SESSION['error'] = 'Video not found.';
-  header('location: videos');
+  header('location: ../videos');
   exit();
 }
 
@@ -17,7 +18,7 @@ $player = $stmt->fetch();
 
 if (!$player) {
   $_SESSION['error'] = 'Player not found.';
-  header('location: videos');
+  header('location: ../videos');
   exit();
 }
 
@@ -27,7 +28,7 @@ $user_player = $stmt->fetch();
 
 if (!$user_player) {
   $_SESSION['error'] = 'User not found.';
-  header('location: videos');
+  header('location: ../videos');
   exit();
 }
 
@@ -146,7 +147,7 @@ if($user['profile_set'] == 0){
                     <a class="image-tile col-xl-3 col-lg-3 col-md-3 col-md-4 col-6g glightbox" data-gallery="videos" data-title="<?php echo $video['description']; ?>, Uploaded: <?php echo date('d, M Y', strtotime($video['created_at'])); ?>" href="<?php echo $video['file_url']; ?>">
                       <img src="<?php echo $thumbnail; ?>" alt="image" />
                       <div class="demo-gallery-poster">
-                        <img src="../assets/images/lightbox/play-button.png" alt="image">
+                        <img src="<?php echo $settings['site_url']; ?>assets/images/lightbox/play-button.png" alt="image">
                       </div>
                     </a>
                   </div>
@@ -165,7 +166,7 @@ if($user['profile_set'] == 0){
                         SELECT v.*, r.total_score, r.consistency_index, r.rating_breakdown, r.category
                         FROM videos v
                         LEFT JOIN podratings r ON v.id = r.video_id
-                        WHERE v.id = ?
+                        WHERE v.uuid = ?
                     ");
                     $stmt->execute([$video_id]);
                     $video = $stmt->fetch(PDO::FETCH_ASSOC);
