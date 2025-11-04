@@ -64,7 +64,7 @@ if($user['profile_set'] == 0){
           $player = $stmt->fetch(PDO::FETCH_ASSOC);
 
           // Player stats
-          $statsStmt = $conn->prepare("SELECT * FROM PlayerStats WHERE player_id = ?");
+          $statsStmt = $conn->prepare("SELECT * FROM playerstats WHERE player_id = ?");
           $statsStmt->execute([$player['id']]);
           $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
           
@@ -123,7 +123,7 @@ if($user['profile_set'] == 0){
                     <?php
                     // FETCH VIDEOS
                     $stmt = $conn->prepare("SELECT * FROM videos WHERE player_id = ? ORDER BY id DESC");
-                    $stmt->execute([$user['id']]);
+                    $stmt->execute([$player['id']]);
                     $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);    
                     ?>
 

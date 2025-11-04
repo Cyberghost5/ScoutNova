@@ -124,7 +124,7 @@ if($user['profile_set'] == 0){
                     <?php
                     // FETCH VIDEOS
                     $stmt = $conn->prepare("SELECT * FROM videos WHERE player_id = ? ORDER BY id DESC");
-                    $stmt->execute([$user['id']]);
+                    $stmt->execute([$player['id']]);
                     $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);    
                     ?>
 
