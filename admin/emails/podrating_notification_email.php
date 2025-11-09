@@ -44,7 +44,7 @@
                             <span style='display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;'></span>
                             <div style='background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;'>
                                 <p style='color:#455056; font-size:14px;line-height:24px; margin:0 0 10px 0; font-weight: 600;'>Total Score: <span style='color:#1e1e2d; font-weight: 700;'><?php echo $total_score; ?></span></p>
-                                <p style='color:#455056; font-size:14px;line-height:24px; margin:0 0 10px 0; font-weight: 600;'>Consistency Index: <span style='color:#1e1e2d; font-weight: 700;'><?php echo $consistency_index; ?>%</span></p>
+                                <p style='color:#455056; font-size:14px;line-height:24px; margin:0 0 10px 0; font-weight: 600;'>Consistency Index: <span style='color:#1e1e2d; font-weight: 700;'><?php echo $consistency_index_new; ?>%</span></p>
                                 <p style='color:#455056; font-size:14px;line-height:24px; margin:0 0 10px 0; font-weight: 600;'>Category: <span style='color:#1e1e2d; font-weight: 700;'><?php echo ucfirst($category); ?></span></p>
                                 <!-- <p style='color:#455056; font-size:14px;line-height:24px; margin:0; font-weight: 600;'>AI Confidence: <span style='color:#1e1e2d; font-weight: 700;'><?php echo $ai_confidence; ?></span></p> -->
                             </div>

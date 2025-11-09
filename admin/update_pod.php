@@ -176,6 +176,7 @@ try {
     $userStmt->execute([$player_id]);
     $user = $userStmt->fetch(PDO::FETCH_ASSOC);
     $player_email = $user ? $user['email'] : null; 
+    $consistency_index_new = $consistency_index ?? 100;
 
     $mail = new PHPMailer(true);
     try {

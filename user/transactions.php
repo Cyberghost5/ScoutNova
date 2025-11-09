@@ -1,4 +1,12 @@
-<?php include 'includes/head.php'; ?>
+<?php include 'include/session.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<?php include 'includes/head.php'; 
+if($user['profile_set'] == 0){
+    echo "<script>window.location.assign('set-profile')</script>"; 
+    exit;
+    // header('location: set-profile');
+}?>
 <body class="sidebar-dark">
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
@@ -73,8 +81,8 @@
                         $conn = $pdo->open();
 
                         try{
-                          $stmt = $conn->prepare("SELECT * FROM transactions ORDER BY id DESC");
-                          $stmt->execute();
+                          $stmt = $conn->prepare("SELECT * FROM transactions WHERE user_id = :userid ORDER BY id DESC");
+                          $stmt->execute(['userid'=>$user['id']]);
                           $i = 0;
                           foreach($stmt as $row){
                             if ($row['status'] == 0) {

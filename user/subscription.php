@@ -120,7 +120,7 @@ if(isset($_GET['action']) == 'cancel'){
         $mail->Subject = 'Subscription Cancellation - ' . $settings['site_name'];
         
         ob_start();
-        include 'emails/set_player_profile_notification_email.php';
+        include 'emails/subscription_cancelled_notification_email.php';
         $mail->Body = ob_get_clean();
         
         $mail->send();

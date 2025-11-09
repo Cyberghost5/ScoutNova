@@ -195,7 +195,7 @@ exit;
                                 <div class="d-flex justify-content-center gap-3 mt-4">
                                   <form action="subscription" method="POST" id="subscriptionForm">
                                     <input type="hidden" name="plan_id" value="<?php echo $plan['id']; ?>">
-                                    <button type="submit" id="agree_btn" class="btn btn-outline-success mr-3">
+                                    <button type="submit" class="btn btn-outline-success mr-3">
                                       <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                       <span class="btn-text">Agree</span>
                                     </button>
@@ -253,7 +253,7 @@ exit;
   });
   </script>
   <script>
-  $(document).on('click', '#agree_btn', function(e) {
+  $(document).on('click', '.agree_btn', function(e) {
     e.preventDefault();
 
     console.log('✅ Agree button clicked');

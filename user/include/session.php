@@ -51,7 +51,7 @@ $today = date('Y-m-d');
 				$_SESSION['error'] = 'Incorrect Password';
             	setcookie("username", "", time() - 3600, "/");
             	setcookie("password", "", time() - 3600, "/");
-		        echo "<script>window.location.assign('../login')</script>";
+		        echo "<script>window.location.assign('../../login')</script>";
 			}
 		}
 		elseif ($row['status'] == 2) {
@@ -59,20 +59,20 @@ $today = date('Y-m-d');
 			do <a href="contact">write</a> to us providing your username and we could help resolve this.';
         	setcookie("username", "", time() - 3600, "/");
         	setcookie("password", "", time() - 3600, "/");
-		    echo "<script>window.location.assign('../login')</script>";
+		    echo "<script>window.location.assign('../../login')</script>";
 		}
 		else{
 			$_SESSION['error'] = 'Account not activated. Check your email for activation link.';
         	setcookie("username", "", time() - 3600, "/");
         	setcookie("password", "", time() - 3600, "/");
-		    echo "<script>window.location.assign('../login')</script>";
+		    echo "<script>window.location.assign('../../login')</script>";
 		}
 	}
 	else{
 		$_SESSION['error'] = 'Username not found';
     	setcookie("username", "", time() - 3600, "/");
     	setcookie("password", "", time() - 3600, "/");
-		echo "<script>window.location.assign('../login')</script>";
+		echo "<script>window.location.assign('../../login')</script>";
 	}
 	
     }
@@ -108,7 +108,7 @@ $today = date('Y-m-d');
         	setcookie("username", "", time() - 3600, "/");
         	setcookie("password", "", time() - 3600, "/");
           unset($_SESSION['user']);
-		    echo "<script>window.location.assign('../login')</script>";
+		    echo "<script>window.location.assign('../../login')</script>";
 		}
     
     if($user['profile_set'] === 0){
@@ -119,8 +119,8 @@ $today = date('Y-m-d');
 
     $pdo->close();
   }else {
-    // header('location: ../login');
-    echo "<script>window.location.assign('../login')</script>";
+    // header('location: ../../login');
+    echo "<script>window.location.assign('../../login')</script>";
   }
 
     if ('session_start()' == true) {

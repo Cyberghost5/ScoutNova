@@ -41,15 +41,19 @@
                         <td style='padding:0 35px;'>
                             <h1 style='color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;'>Hi <?php echo $user['firstname']; ?>,</h1>
                             <p>
-                                This is to confirm that your subscription has been successfully cancelled. We're sorry to see you go, but we appreciate the time you've spent with us.
+                                We're excited to inform you that your subscription to <strong><?php echo $settings['site_name']; ?></strong> has been successfully activated! Welcome aboard!
                             </p>
-                            
                             <p>
-                                You will continue to have access to your subscription benefits until the end of your current billing cycle, which is on <strong><?php echo date('F j, Y - g:i A', strtotime($subscription['next_payment_date'])); ?></strong>.
+                                You can now enjoy all the exclusive benefits and features that come with your subscription. We're committed to providing you with the best experience possible.
                             </p>
-
                             <p>
-                                If you change your mind, you can always resubscribe at any time by visiting your dashboard.
+                                Your subscription details are as follows:
+                                <ul>
+                                    <li><strong>Subscription Plan:</strong> <?php echo $plan['name']; ?></li>
+                                    <li><strong>Start Date:</strong> <?php echo date('F j, Y - g:i A'); ?></li>
+                                    <li><strong>Next Payment Date:</strong> <?php echo date('F j, Y - g:i A', strtotime($next_payment_date)); ?></li>
+                                    <li><strong>Amount:</strong> <?php echo $plan['currency'] . number_format($plan['amount'], 2); ?></li>
+                                </ul>
                             </p>
 
                             <div style="text-align: center; margin: 30px 0;">

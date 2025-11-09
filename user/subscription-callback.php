@@ -1,5 +1,29 @@
 <?php
 include 'include/session.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
+require '../vendor/phpmailer/src/Exception.php';
+require '../vendor/phpmailer/src/PHPMailer.php';
+require '../vendor/phpmailer/src/SMTP.php';
+
+$conn = $pdo->open();
+
+// Fetch email settings
+$stmt = $conn->prepare("SELECT * FROM email_settings WHERE id = 1");
+$stmt->execute();
+$email_settings = $stmt->fetch();
+
+$email_host = $email_settings['stmphost'];
+$email_username = $email_settings['stmpuser'];
+$email_password = $email_settings['password'];
+$email_port = $email_settings['portno'];
+$email_from = $email_settings['from_email'];
+$email_reply = $email_settings['replyto'];
+$email_to = $settings['admin_email'];
+
 $secret_key = $settings['flutterwave_secret_key'];
 
 if (isset($_GET['status'])) {
@@ -13,7 +37,7 @@ if (isset($_GET['status'])) {
 
     // 🔹 Successful or Completed
     if (in_array($_GET['status'], ['successful', 'completed'])) {
-        $txid = $_GET['tr_ref'] ?? $_GET['transaction_id'];
+        $txid = $_GET['tr_ref'] ?? $_GET['transaction_id'] ?? $_GET['tr_ref'];
 
         // Verify Transaction
         $curl = curl_init();
@@ -136,6 +160,15 @@ if (isset($_GET['status'])) {
                     ");
                     $stmt->execute([$plan_id, $user_id]);
 
+                    $uuid = generateHexUUID();
+
+                    // Insert into transactions table
+                    $stmt = $conn->prepare("
+                        INSERT INTO transactions (user_id, uuid, transaction_id, amount, currency, payment_method, transaction_type, status, created_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    ");
+                    $stmt->execute([$user_id, $uuid, $transaction_id, $amountPaid, $res->data->currency, 'Flutterwave', 'Subscription Payment', '1']);
+
                     if($user['role'] == 'user'){
                         // Update players table if user is a player
                         $stmt = $conn->prepare("UPDATE players SET subscription_status = 'active', subscription_plan_id = ?, featured = 1 WHERE user_id = ?");
@@ -147,6 +180,39 @@ if (isset($_GET['status'])) {
                     }
 
                     $_SESSION['success'] = "Payment successful! Subscription is now active.";
+
+                    // Send email notification to user
+                    $mail = new PHPMailer(true);
+                    try {
+                        //Server settings
+                        $mail->isSMTP();
+                        $mail->Host       = $email_host;
+                        $mail->SMTPAuth   = true;
+                        $mail->Username   = $email_username;
+                        $mail->Password   = $email_password;
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                        $mail->Port       = $email_port;
+                        
+                        //Recipients
+                        $mail->setFrom($email_from, $settings['site_name']);
+                        $mail->addAddress($user['email'], $settings['site_name']);
+                        // $mail->addAddress($email_to, $settings['site_name']);
+                        $mail->addReplyTo($email_reply, $settings['site_name']);
+                        
+                        // Content
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Subscription Activation - ' . $settings['site_name'];
+                        
+                        ob_start();
+                        include 'emails/subscription_activation_notification_email.php';
+                        $mail->Body = ob_get_clean();
+                        
+                        $mail->send();
+                    } catch (Exception $e) {
+                        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+                        $_SESSION['error'] = 'Notification email could not be sent. ' .$mail->ErrorInfo;
+                    }
+
                     echo "<script>window.location.assign('subscriptions');</script>";
                     exit;
 

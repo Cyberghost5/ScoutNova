@@ -63,6 +63,12 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/transactions">
+          <i class="mdi mdi-currency-usd menu-icon"></i>
+          <span class="menu-title">Transactions</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/analytics">
           <i class="mdi mdi-chart-bar menu-icon"></i>
           <span class="menu-title">Analytics</span>
@@ -103,15 +109,21 @@
       </li>
       <?php endif; ?>
       <li class="nav-item">
+        <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/discover">
+          <i class="mdi mdi-account-search menu-icon"></i>
+          <span class="menu-title">Discover Players</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/subscriptions">
           <i class="mdi mdi-credit-card-multiple menu-icon"></i>
           <span class="menu-title">Subscription</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/discover">
-          <i class="mdi mdi-account-search menu-icon"></i>
-          <span class="menu-title">Discover Players</span>
+        <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/transactions">
+          <i class="mdi mdi-currency-usd menu-icon"></i>
+          <span class="menu-title">Transactions</span>
         </a>
       </li>
       <!-- <li class="nav-item">
