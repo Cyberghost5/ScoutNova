@@ -45,12 +45,12 @@ if($user['profile_set'] == 0){
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   .playerpod .container { max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-  .playerpod h2 { text-align: center; margin-bottom: 20px; color: #9f04c8; }
+  .playerpod h2 { text-align: center; margin-bottom: 20px; color: #4d4bec; }
   .playerpod .chart-container { width: 100%; height: 350px; margin-top: 30px; }
   .playerpod .stats { display: flex; justify-content: space-around; margin-top: 20px; }
   .playerpod .stat-box { background: #f1f5f9; border-radius: 12px; padding: 20px; width: 45%; text-align: center; }
   .playerpod .stat-box h3 { margin: 0; font-size: 1.2rem; color: #1e293b; }
-  .playerpod .stat-box p { font-size: 2rem; margin-top: 8px; font-weight: bold; color: #9f04c8; }
+  .playerpod .stat-box p { font-size: 2rem; margin-top: 8px; font-weight: bold; color: #4d4bec; }
 </style>
 <body class="sidebar-dark">
   <div class="container-scroller">

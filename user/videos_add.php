@@ -1,4 +1,12 @@
 <?php
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+    use PHPMailer\PHPMailer\SMTP;
+
+    require '../vendor/phpmailer/src/Exception.php';
+    require '../vendor/phpmailer/src/PHPMailer.php';
+    require '../vendor/phpmailer/src/SMTP.php';
+
 	include 'include/session.php';
 	include 'includes/slugify.php';
     include '../vendor/autoload.php';
@@ -16,6 +24,19 @@
     $stmt->execute([$user['id']]);
     $subscription = $stmt->fetch();
 
+    // Fetch email settings
+    $stmt = $conn->prepare("SELECT * FROM email_settings WHERE id = 1");
+    $stmt->execute();
+    $email_settings = $stmt->fetch();
+
+    $email_host = $email_settings['stmphost'];
+    $email_username = $email_settings['stmpuser'];
+    $email_password = $email_settings['password'];
+    $email_port = $email_settings['portno'];
+    $email_from = $email_settings['from_email'];
+    $email_reply = $email_settings['replyto'];
+    $email_to = $settings['admin_email'];
+
     if (!$subscription) {
         // No active subscription, check number of uploaded videos
         $videoCountStmt = $conn->prepare("SELECT COUNT(*) AS video_count FROM videos WHERE player_id = ?");
@@ -23,7 +44,7 @@
         $videoCountResult = $videoCountStmt->fetch();
         $uploadedVideos = $videoCountResult ? $videoCountResult['video_count'] : 0;
 
-        $freeUploadLimit = 5; // Set free upload limit
+        $freeUploadLimit = 50; // Set free upload limit
 
         if ($uploadedVideos >= $freeUploadLimit) {
             $_SESSION['error'] = 'You have reached the free upload limit. Please subscribe to upload more videos.';
@@ -62,7 +83,7 @@
                 $logFile = __DIR__ . '/cloudinary_log.txt'; // path to your log file
 
                 $uploadResult = $cloudinary->uploadApi()->upload($fileTmpPath, [
-                    // 'folder' => "scoutnova/users/videos",
+                    'folder' => "scoutnova/users/videos",
                     'resource_type' => 'video'
                 ]);
 
@@ -106,11 +127,49 @@
             // --- SAVE TO DATABASE ---
             if ($videoUrl) {
 
-                // Send email notification to admin (optional)
-
                 $stmt = $conn->prepare("INSERT INTO videos (uuid, video_id, full_link, description, file_url, player_id, upload_type, thumbnail_url, cloudinary_public_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([$uuid, $video_id, $full_link, $detail, $videoUrl, $player_id, $upload_type, $thumbnailUrl, $public_id]);
                 // echo "<div style='color: green;'>✅ Upload successful! Video: <a href='$videoUrl' target='_blank'>$videoUrl</a></ div>";
+
+                // Send email to admin
+                $mail = new PHPMailer(true);
+                try {
+                    //Server settings
+                    $mail->isSMTP();
+                    $mail->Host       = $email_host;
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = $email_username;
+                    $mail->Password   = $email_password;
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    $mail->Port       = $email_port;
+
+                    //Recipients
+                    $mail->setFrom($email_from, $settings['site_name']);
+                    $mail->addAddress($user['email'], $settings['site_name']);
+                    $mail->addAddress($email_to, $settings['site_name']);
+                    $mail->addReplyTo($email_reply, $settings['site_name']);
+
+                    // Content
+                    $mail->isHTML(true);
+                    $mail->Subject = $settings['site_name']. ' New Video Uploaded';
+                    
+                    ob_start();
+                    include 'emails/video_upload_notification_email.php';
+                    $mail->Body = ob_get_clean();
+                    
+                    // $mail->Body    = "
+                    //     <h3>A new video has been uploaded.</h3>
+                    //     <p>Video URL: <a href='$videoUrl'>$videoUrl</a></p>
+                    //     <br>
+                    //     <p>Thank you for using our service!</p>
+                    // ";
+
+                    $mail->send();
+                } catch (Exception $e) {
+                    error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+                    $_SESSION['error'] = 'Notification email could not be sent. ' .$mail->ErrorInfo;
+                }
+
                 $_SESSION['success'] = 'Video added successfully';
                 header('location: videos');
                 exit;

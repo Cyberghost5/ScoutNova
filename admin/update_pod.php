@@ -1,5 +1,30 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
+require '../vendor/phpmailer/src/Exception.php';
+require '../vendor/phpmailer/src/PHPMailer.php';
+require '../vendor/phpmailer/src/SMTP.php';
+
 include 'include/session.php';
+
+$conn = $pdo->open();
+
+// Fetch email settings
+$stmt = $conn->prepare("SELECT * FROM email_settings WHERE id = 1");
+$stmt->execute();
+$email_settings = $stmt->fetch();
+
+$email_host = $email_settings['stmphost'];
+$email_username = $email_settings['stmpuser'];
+$email_password = $email_settings['password'];
+$email_port = $email_settings['portno'];
+$email_from = $email_settings['from_email'];
+$email_reply = $email_settings['replyto'];
+$email_to = $settings['admin_email'];
+
 header('Content-Type: application/json');
 
 try {
@@ -145,6 +170,56 @@ try {
     // ✅ Update video status
     $updateVideo = $conn->prepare("UPDATE videos SET status = 1, ai_score = ?, updated_at = NOW() WHERE id = ?");
     $updateVideo->execute([$total_score, $video_id]);
+
+    // Send notification email
+    $userStmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
+    $userStmt->execute([$player_id]);
+    $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+    $player_email = $user ? $user['email'] : null; 
+
+    $mail = new PHPMailer(true);
+    try {
+        //Server settings
+        $mail->isSMTP();
+        $mail->Host       = $email_host;
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $email_username;
+        $mail->Password   = $email_password;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = $email_port;
+
+        //Recipients
+        $mail->setFrom($email_from, $settings['site_name']);
+
+        // Add recipient - assuming $player_email is defined in the calling context
+        $mail->addAddress($player_email);
+        $mail->addAddress($email_to, $settings['site_name']);
+        $mail->addReplyTo($email_reply, $settings['site_name']);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = $settings['site_name']. ' POD Rating Updated';
+        
+        // Get message content from external file
+        ob_start();
+        include 'emails/podrating_notification_email.php';
+        $mail->Body = ob_get_clean();
+        
+        // $mail->Body    = "
+        //     <h3>Your pod rating has been updated.</h3>
+        //     <p>Total Score: {$total_score}</p>
+        //     <p>Consistency Index: {$consistency_index}</p>
+        //     <p>Category: {$category}</p>
+        //     <p>AI Confidence: {$ai_confidence}</p>
+        //     <br>
+        //     <p>Thank you for using our service!</p>
+        // ";
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        $_SESSION['error'] = 'Notification email could not be sent. ' .$mail->ErrorInfo;
+    }
 
     $_SESSION['success'] = "POD rating updated successfully.";
     header('Location: video/' . $video_uuid);

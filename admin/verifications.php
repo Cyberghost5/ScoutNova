@@ -47,7 +47,7 @@
 
                 // Fetch pending verifications for both players and scouts
                 $playerStmt = $conn->query("
-                  SELECT pv.*, u.firstname, u.lastname, 'player' AS type
+                  SELECT pv.*, u.firstname, u.lastname, u.email, 'player' AS type
                   FROM player_verifications pv
                   JOIN users u ON u.id = pv.player_id
                   WHERE pv.status = 'pending'
@@ -55,7 +55,7 @@
                 ");
 
                 $scoutStmt = $conn->query("
-                  SELECT sv.*, u.firstname, u.lastname, 'scout/agent' AS type
+                  SELECT sv.*, u.firstname, u.lastname, u.email, 'scout/agent' AS type
                   FROM scout_verifications sv
                   JOIN users u ON u.id = sv.scout_id
                   WHERE sv.status = 'pending'
@@ -112,6 +112,7 @@
 
                       <form action="verification-action" method="POST" class="mt-3">
                         <input type="hidden" name="id" value="<?= $v['id'] ?>">
+                        <input type="hidden" name="email" value="<?= $v['email'] ?>">
                         <input type="hidden" name="type" value="<?= $v['type'] ?>">
                         <textarea name="notes" rows="2" class="form-control mb-2" placeholder="Optional review notes..."></textarea>
                         <div class="d-flex p-2">

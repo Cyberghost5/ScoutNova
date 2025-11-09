@@ -133,7 +133,7 @@ try {
 						<tr>
 						<td style='text-align:center;'>
 						<a href='".$settings['site_url']."' title='logo' target='_blank'>
-						<img width='300' src='".$settings['site_url']."assets/images/".$settings['favicon']."'>
+						<img width='100' src='".$settings['site_url']."assets/images/".$settings['favicon']."'>
 						</a>
 						</td>
 						</tr>
@@ -158,7 +158,7 @@ try {
 						</p>
 
 						<a href='".$settings['site_url']."activate?code=".$code."&user=".$userid."'
-						style='background:#9a06cd;text-decoration:none !important; display:inline-block; font-weight:500; margin-top:24px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;'>Activate Your Account</a>
+						style='background:#4d4bec;text-decoration:none !important; display:inline-block; font-weight:500; margin-top:24px; color:#fff; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;'>Activate Your Account</a>
 						</td>
 						</tr>
 						<tr>

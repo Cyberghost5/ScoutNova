@@ -46,6 +46,21 @@
       <a class="nav-link" href="<?php echo $settings['site_url']; ?>admin/verifications">
         <i class="mdi mdi-account-check menu-icon"></i>
         <span class="menu-title">Verification</span>
+        <?php
+           $stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM player_verifications WHERE status = 'pending'");
+           $stmt->execute();
+           $players_verification_yet_to_be_done =  $stmt->fetch();
+
+           $stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM scout_verifications WHERE status = 'pending'");
+           $stmt->execute();
+           $scouts_verification_yet_to_be_done =  $stmt->fetch();
+
+           if ($players_verification_yet_to_be_done['numrows'] == 0 ?? $scouts_verification_yet_to_be_done['numrows'] == 0) {
+             echo "";
+           }else {
+             echo "<span class='badge badge-danger right fs-3'>".number_format_short($players_verification_yet_to_be_done['numrows']) ?? number_format_short($scouts_verification_yet_to_be_done['numrows'])."</span>";
+           }
+        ?>
       </a>
     </li>
 
@@ -68,7 +83,7 @@
         <i class="mdi mdi-cloud-upload menu-icon"></i>
         <span class="menu-title">Video Reviews</span>
         <?php
-           $stmt = $conn->prepare("SELECT *, COUNT(*) AS numrows FROM videos WHERE status = 0");
+           $stmt = $conn->prepare("SELECT COUNT(*) AS numrows FROM videos WHERE status = 0");
            $stmt->execute();
            $vidoes_yet_to_be_done =  $stmt->fetch();
 

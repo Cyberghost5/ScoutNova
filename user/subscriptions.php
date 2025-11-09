@@ -141,7 +141,7 @@ exit;
                       border-radius: 50%;
                     }
                     input:checked + .slider {
-                      background-color: #9f04c8;
+                      background-color: #4d4bec;
                     }
                     input:checked + .slider:before {
                       transform: translateX(30px);
@@ -193,9 +193,12 @@ exit;
                                 <p>You are about to upgrade your subscription to the <strong><?php echo $plan['name']; ?></strong> plan and you will be charged <strong><?php echo $plan['currency_short']; ?><?php echo number_format($plan['amount'], 2); ?></strong> on a <strong><?php echo $plan['intervals']; ?></strong> basis.</p>
                                 <p>By upgrading, you agree to the <?php echo $settings['site_name']; ?> Terms of Service and Privacy Policy.</p>
                                 <div class="d-flex justify-content-center gap-3 mt-4">
-                                  <form action="subscription" method="POST">
+                                  <form action="subscription" method="POST" id="subscriptionForm">
                                     <input type="hidden" name="plan_id" value="<?php echo $plan['id']; ?>">
-                                    <button type="submit" class="btn btn-outline-success mr-3">Agree</button>
+                                    <button type="submit" id="agree_btn" class="btn btn-outline-success mr-3">
+                                      <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                      <span class="btn-text">Agree</span>
+                                    </button>
                                   </form>
                                   <button data-dismiss="modal" class="btn btn-outline-danger mr-3">Cancel</button>
                                 </div>
@@ -247,6 +250,27 @@ exit;
         plan.style.display = plan.dataset.interval === showInterval ? 'block' : 'none';
       });
     });
+  });
+  </script>
+  <script>
+  $(document).on('click', '#agree_btn', function(e) {
+    e.preventDefault();
+
+    console.log('✅ Agree button clicked');
+
+    let $btn = $(this);
+    let $spinner = $btn.find('.spinner-border');
+    let $btnText = $btn.find('.btn-text');
+
+    // show spinner & change text
+    $spinner.removeClass('d-none');
+    $btnText.text('Processing...');
+    $btn.prop('disabled', true).addClass('disabled');
+
+    // delay to show spinner before submission
+    setTimeout(function() {
+      $('#subscriptionForm').submit();
+    }, 400);
   });
   </script>
 </body>

@@ -32,10 +32,9 @@ body, html {
   align-items: center;
 }
 video {
-  max-width: 100%;
-  max-height: 100%;
-  /* object-fit: contain; */
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   background-color: #000;
 }
 .video-overlay {
@@ -86,6 +85,8 @@ video {
   display: none;
   height: 50vh;
   overflow-y: auto;
+  backdrop-filter: blur(10px);
+  border-radius: 20px 20px 0 0;
 }
 .comment-modal input {
   width: 100%;
@@ -95,6 +96,18 @@ video {
   color: white;
   outline: none;
   margin-top: 10px;
+  border-radius: 20px;
+}
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #ccc;
+}
+.close-modal:hover {
+  color: white;
 }
 </style>
 </head>
@@ -106,6 +119,7 @@ video {
 
 <!-- Comments Modal -->
 <div id="commentModal" class="comment-modal">
+  <span class="close-modal" onclick="closeComments()">&times;</span>
   <h2 class="text-lg font-bold mb-3">Comments</h2>
   <div id="commentList"></div>
   <input type="text" id="commentInput" placeholder="Write a comment..." onkeydown="if(event.key==='Enter') sendComment()">
@@ -146,7 +160,7 @@ function handleScroll() {
 
   videos.forEach(v => {
     const rect = v.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
+    const inView = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
 
     if (inView && !playing) {
       v.play().catch(() => {});
@@ -157,7 +171,7 @@ function handleScroll() {
   });
 
   // Infinite scroll trigger
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
     loadVideos();
   }
 }
@@ -178,8 +192,21 @@ async function toggleLike(videoId, el) {
     body: 'action=like&video_id=' + videoId
   });
   const data = await res.json();
+  
+  if (data.error) {
+    console.error('Error:', data.error);
+    return;
+  }
+  
   el.querySelector('span').innerText = data.likes;
-  el.querySelector('i').classList.toggle('text-red-500');
+  const icon = el.querySelector('i');
+  if (data.liked) {
+    icon.classList.remove('mdi-heart-outline');
+    icon.classList.add('mdi-heart', 'text-red-500');
+  } else {
+    icon.classList.remove('mdi-heart', 'text-red-500');
+    icon.classList.add('mdi-heart-outline');
+  }
 }
 
 // Open comments modal
@@ -194,6 +221,12 @@ async function openComments(videoId) {
   });
   const html = await res.text();
   document.getElementById('commentList').innerHTML = html;
+}
+
+// Close comments modal
+function closeComments() {
+  document.getElementById('commentModal').style.display = 'none';
+  currentVideoId = null;
 }
 
 // Send comment
@@ -212,8 +245,15 @@ async function sendComment() {
   input.value = '';
 }
 
+// Close modal when clicking outside
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('commentModal');
+  if (e.target === modal) {
+    closeComments();
+  }
+});
+
 document.addEventListener('scroll', handleScroll);
-document.addEventListener('DOMContentLoaded', () => loadVideos());
 </script>
 
 </body>

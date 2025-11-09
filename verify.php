@@ -76,7 +76,7 @@ $pdo->close();
 					$_SESSION['error'] = 'Account not activated. Check your email for activation link.';
 					$_SESSION['username'] = $username;
 					// echo $_SESSION['error'] .'jeek';
-					var_dump($_SESSION);
+					// var_dump($_SESSION);
 				}
 			}
 			else{
