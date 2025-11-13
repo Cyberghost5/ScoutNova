@@ -252,7 +252,7 @@
                               <p class="mb-5">Our vision is to become the world's leading digital scouting ecosystem that bridges the gap between promising athletes and professional opportunities — fostering long-term career growth and inclusivity.</p>
                             </div>
                             <div class="align-self-start">
-                              <a class="glightbox btn btn-play d-inline-flex align-items-center gap-2" href="http://localhost/assets/videos/scoutnova.mp4" data-gallery="video">
+                              <a class="glightbox btn btn-play d-inline-flex align-items-center gap-2" href="http://localhost/nova/assets/videos/scoutnova.mp4" data-gallery="video">
                                 <i class="bi bi-play-fill"></i> Watch the Video
                               </a>
                             </div>
