@@ -192,6 +192,62 @@ if($user['profile_set'] == 0){
     </div>
     <!-- page-body-wrapper ends -->
   </div>
+    
+  <!-- Add -->
+  <div class="modal" id="addnew1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><b>Add New Video</b></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            &times;
+          </button>
+          </div>
+          <form id="videoUploadForm" class="form-horizontal" method="POST" action="videos_add" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="instruction">Details</label>
+                <textarea name="detail" class="form-control" rows="8" cols="80" placeholder="Enter Video Summary" required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Longer Video Link</label>
+                <input type="url" class="form-control" name="full_link" placeholder="Enter URL" required>
+              </div>
+              <div class="form-group">
+                <label for="validity" class="control-label">Video</label>
+                <input type="file" class="form-control" name="video" required accept="video/*">
+              </div>
+              <small>Videos must capture: Impressive key passes, Good defensive actions, Prolific goals (e.g., overhead kick for striker profiles). And for basketball: Skillful dunking , Successful dribbles, Completion of drills, Sprinting ability, Shooting power, Agility, balance, ball control.</small><br>
+              <small class="text-danger">Note: Video to be uploaded has to be at least 60 seconds only and 10 MB in size, a link to full video preferally on Youtube can also be submnitted.</small>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default btn-rounded pull-left" data-dismiss="modal"><i class="mdi mdi-window-close"></i> Close</button>
+              <button type="submit" class="btn btn-primary btn-rounded" name="add"><i class="ti-save"></i> Save</button>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Modal -->
+  <div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-body text-center py-5">
+          <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <h5 class="mb-2">Uploading Video...</h5>
+          <p class="text-muted">Please wait while your video is being uploaded and processed.</p>
+          <div class="progress mt-3" style="height: 25px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="uploadProgress"></div>
+          </div>
+          <small class="text-muted mt-2 d-block">This may take a few minutes depending on your video size.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- container-scroller -->
   <?php include 'includes/scripts.php'; ?>
   <!-- GLightbox JS (from cdnjs) -->
@@ -214,43 +270,42 @@ if($user['profile_set'] == 0){
     lightbox.on('open', ({index, slide}) => {
       // console.log('opened slide', index, slide);
     });
+
+    // Handle video upload form submission
+    document.getElementById('videoUploadForm').addEventListener('submit', function(e) {
+      // Hide the upload modal
+      $('#addnew1').css({
+        "display": "none"
+      });
+      $('#addnew1').modal('hide');
+      
+      // Show the loading modal
+      $('#loadingModal').modal('show');
+      
+      // Simulate upload progress (for demonstration purposes)
+      simulateUploadProgress();
+      
+      // Note: The form will still submit normally after this
+    });
+    
+    function simulateUploadProgress() {
+      const progressBar = document.getElementById('uploadProgress');
+      let progress = 0;
+      
+      const interval = setInterval(function() {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+        }
+        progressBar.style.width = progress + '%';
+        progressBar.textContent = Math.round(progress) + '%';
+      }, 500);
+    }
+
   </script>
   
 
-<!-- Add -->
-<div class="modal fade" id="addnew1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title"><b>Add New Video</b></h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body">
-          <form class="form-horizontal" method="POST" action="videos_add" enctype="multipart/form-data">
-            <div class="form-group">
-              <label for="instruction">Details</label>
-              <textarea name="detail" class="form-control" rows="8" cols="80" placeholder="Enter Video Summary" required></textarea>
-            </div>
-            <div class="form-group">
-              <label class="control-label">Longer Video Link</label>
-              <input type="url" class="form-control" name="full_link" placeholder="Enter URL" required>
-            </div>
-            <div class="form-group">
-              <label for="validity" class="control-label">Video</label>
-              <input type="file" class="form-control" name="video" required accept="video/*">
-            </div>
-            <small>Videos must capture: Impressive key passes, Good defensive actions, Prolific goals (e.g., overhead kick for striker profiles). And for basketball: Skillful dunking , Successful dribbles, Completion of drills, Sprinting ability, Shooting power, Agility, balance, ball control.</small><br>
-            <small class="text-danger">Note: Video to be uploaded has to be at least 60 seconds only and 10 MB in size, a link to full video preferally on Youtube can also be submnitted.</small>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-rounded pull-left" data-dismiss="modal"><i class="mdi mdi-window-close"></i> Close</button>
-            <button type="submit" class="btn btn-primary btn-rounded" name="add"><i class="ti-save"></i> Save</button>
-          </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 </body>

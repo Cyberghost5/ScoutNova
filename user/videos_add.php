@@ -38,6 +38,7 @@
     $email_to = $settings['admin_email'];
 
     if (!$subscription) {
+
         // No active subscription, check number of uploaded videos
         $videoCountStmt = $conn->prepare("SELECT COUNT(*) AS video_count FROM videos WHERE player_id = ?");
         $videoCountStmt->execute([$user['id']]);
@@ -51,7 +52,24 @@
             header('location: videos');
             exit;
         }
+
     }
+
+    // Maximum video to post per day should be 5
+    $maxVideoCountStmt = $conn->prepare("SELECT COUNT(*) AS video_count FROM videos WHERE player_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)");
+    $maxVideoCountStmt->execute([$user['id']]);
+    $maxVideoCountResult = $maxVideoCountStmt->fetch();
+    $maxUploadedVideos = $maxVideoCountResult ? $maxVideoCountResult['video_count'] : 0;
+    
+    $maxUploadPerDay = $settings['upload_limit']; //3; // Set free upload limit
+    
+    if($maxUploadedVideos >= $maxUploadPerDay) {
+        $_SESSION['error'] = 'You have reached the upload limit for today, please try again after 24 hours.';
+        header('location: videos');
+        exit;
+    }
+
+
 
 	if(isset($_POST['add'])){
 		$full_link = $_POST['full_link'];

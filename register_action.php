@@ -158,7 +158,7 @@ try {
 						</p>
 
 						<a href='".$settings['site_url']."activate?code=".$code."&user=".$userid."'
-						style='background:#4d4bec;text-decoration:none !important; display:inline-block; font-weight:500; margin-top:24px; color:#fff; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;'>Activate Your Account</a>
+						style='background:#1e3a8ae6;text-decoration:none !important; display:inline-block; font-weight:500; margin-top:24px; color:#fff; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;'>Activate Your Account</a>
 						</td>
 						</tr>
 						<tr>

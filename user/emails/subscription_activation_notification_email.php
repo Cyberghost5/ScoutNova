@@ -57,7 +57,7 @@
                             </p>
 
                             <div style="text-align: center; margin: 30px 0;">
-                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #4d4bec; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to My Dashboard</a>
+                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #1e3a8ae6; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to My Dashboard</a>
                             </div>
 
                             <p>

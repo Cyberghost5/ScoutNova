@@ -61,8 +61,8 @@
 </div>
 
 <script>
-document.querySelector('form').addEventListener('submit', function() {
-  var modal = new bootstrap.Modal(document.getElementById('uploadingModal'));
-  modal.show();
-});
+// document.querySelector('form').addEventListener('submit', function() {
+//   var modal = new bootstrap.Modal(document.getElementById('uploadingModal'));
+//   modal.show();
+// });
 </script>

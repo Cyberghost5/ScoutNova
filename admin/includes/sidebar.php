@@ -147,6 +147,7 @@
       <div class="collapse" id="form-elements">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"><a class="nav-link" href="<?php echo $settings['site_url']; ?>admin/gen-settings">General Settings</a></li>
+          <li class="nav-item"><a class="nav-link" href="<?php echo $settings['site_url']; ?>admin/email-settings">Email Settings</a></li>
         </ul>
       </div>
     </li>

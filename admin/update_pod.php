@@ -52,6 +52,72 @@ try {
     $stmt->execute([$player_id, $video_id]);
     $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // function calculateConsistency($conn, $player_id, $days = 30, $expectedUploads = 4) {
+    //     $stmt = $conn->prepare("
+    //         SELECT COUNT(*) AS total 
+    //         FROM videos 
+    //         WHERE player_id = ? 
+    //         AND created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+    //     ");
+    //     $stmt->execute([$player_id, $days]);
+    //     $count = $stmt->fetchColumn();
+
+    //     $consistency_index = min(100, ($count / $expectedUploads) * 100);
+
+    //     return round($consistency_index, 2);
+    // }
+
+    // $consistency_index = calculateConsistency($conn, $player_id);
+
+    function calculateSmartConsistency($conn, $player_id, $days = 60) {
+        // Fetch recent uploads by category
+        $stmt = $conn->prepare("
+            SELECT DATE(created_at) AS upload_date
+            FROM videos 
+            WHERE player_id = ? 
+            AND created_at >= DATE_SUB(NOW(), INTERVAL ? MONTH)
+            ORDER BY created_at ASC
+        ");
+        $stmt->execute([$player_id, $days]);
+        $uploads = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        if (empty($uploads)) {
+            return 0; // No uploads = zero consistency
+        }
+
+        $total_weight = 0;
+        $weighted_sum = 0;
+        $last_upload_date = null;
+        $gap_penalty = 0;
+
+        foreach ($uploads as $upload_date) {
+            $days_since = (time() - strtotime($upload_date)) / 86400;
+            $weight = exp(-$days_since / 15); // exponential decay, 15-day half-life
+            $weighted_sum += $weight;
+            $total_weight += 1;
+
+            // Check inactivity gap
+            if ($last_upload_date) {
+                $gap_days = (strtotime($upload_date) - strtotime($last_upload_date)) / 86400;
+                if ($gap_days > 7) {
+                    $gap_penalty += floor($gap_days / 7) * 5; // 5% penalty per week gap
+                }
+            }
+            $last_upload_date = $upload_date;
+        }
+
+        // Normalize score
+        $consistency = ($weighted_sum / $total_weight) * 100;
+
+        // Apply penalties
+        $consistency -= $gap_penalty;
+        $consistency = max(0, min(100, $consistency)); // clamp between 0 and 100
+
+        return round($consistency, 2);
+    }
+
+    $consistency_index = calculateSmartConsistency($conn, $player_id);
+
     if ($existing) {
         // Update existing record
         $history = json_decode($existing['historical_data'], true) ?? [];
@@ -61,7 +127,7 @@ try {
         $scores = array_values($history);
         $mean = array_sum($scores) / count($scores);
         $variance = array_sum(array_map(fn($s) => pow($s - $mean, 2), $scores)) / count($scores);
-        $consistency_index = 100 - min(100, sqrt($variance) * 10);
+        // $consistency_index = 100 - min(100, sqrt($variance) * 10);
 
         $update = $conn->prepare("
             UPDATE podratings 

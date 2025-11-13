@@ -11,12 +11,12 @@ if($user['profile_set'] == 0){
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
     .playerpod .container { background: white; padding: 10px; border-radius: 16px; }
-    .playerpod h2 { text-align: center; color: #4d4bec; margin-bottom: 10px; }
+    .playerpod h2 { text-align: center; color: #1e3a8ae6; margin-bottom: 10px; }
     .playerpod h4 { text-align: center; color: #64748b; margin-top: 0; }
     .playerpod .stats { display: flex; justify-content: space-around; margin: 30px 0; }
     .playerpod .card { background: #f1f5f9; padding: 10px; border-radius: 12px; width: 30%; text-align: center; }
     .playerpod .card h3 { margin: 0; font-size: 1.1rem; }
-    .playerpod .card p { font-size: 1.3rem; margin-top: 8px; font-weight: bold; color: #4d4bec; }
+    .playerpod .card p { font-size: 1.3rem; margin-top: 8px; font-weight: bold; color: #1e3a8ae6; }
     .playerpod .chart-container { margin: 40px 0; }
 </style>
 <body class="sidebar-dark">

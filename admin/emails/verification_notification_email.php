@@ -57,7 +57,7 @@
                                 <li>🎯 You've earned credibility as a verified athlete on the platform.</li>
                             </ul>
                             <div style="text-align: center; margin: 30px 0;">
-                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #4d4bec; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View My Verified Profile</a>
+                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #1e3a8ae6; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View My Verified Profile</a>
                             </div>
                             <p>
                                 Keep building your career — upload more highlights, track your POD, and let your performance speak for you.
@@ -78,7 +78,7 @@
                                 <li>🎯 You've earned credibility as a verified agent on the platform.</li>
                             </ul>
                             <div style="text-align: center; margin: 30px 0;">
-                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #4d4bec; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View My Verified Profile</a>
+                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #1e3a8ae6; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View My Verified Profile</a>
                             </div>
                             <p>
                                 Keep building your career — connect with more players, manage your clients, and let your professionalism speak for you.
@@ -97,7 +97,7 @@
                                 You can resubmit your verification request by logging into your account and following the verification process again.
                             </p>
                             <div style="text-align: center; margin: 30px 0;">
-                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #4d4bec; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Resubmit Verification</a>
+                                <a href="<?php echo $settings['site_url'] ?>login" style="background-color: #1e3a8ae6; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Resubmit Verification</a>
                             </div>
                             <p style="margin-top: 30px; font-size: 14px; color: #555;">
                                 Don't be discouraged — we're here to help you through the process.  

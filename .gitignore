@@ -1,5 +1,5 @@
 # --- Environment files ---
-include/global.php
+!include/global.php
 
 # --- Dependency folders ---
-include/
+!include/

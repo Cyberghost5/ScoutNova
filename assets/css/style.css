@@ -10,12 +10,14 @@ Buy Pro
   --bs-body-bg: #ffffff;
   --bs-body-color: #494B5B;
   /* --bs-primary: #720a63; */
-  --bs-primary: #9a06cd;
-  --bs-primary-rgb: 33, 92, 92;
-  --bs-primary-hover: #4d0341;
-  --bs-primary-hover-rgb: 20, 75, 75;
-  --bs-secondary: #e4c9e8;
-  --bs-secondary-rgb: 229, 201, 232;
+  /* --bs-primary: #9a06cd; */
+  --bs-primary: #1e3a8ae6;
+  --bs-primary-rgb: 30, 58, 138, 0.902;
+  --bs-primary-hover: #041a59e6;
+  --bs-primary-hover-rgb: 4, 26, 89, 0.902;
+  /* --bs-secondary: #e4c9e8; */
+  --bs-secondary: #eab308;
+  --bs-secondary-rgb: 234, 179, 8;
   --bs-heading-color: #16181B;
   --inverse-color: #494B5B;
   --inverse-color-rgb: 73, 75, 91;
