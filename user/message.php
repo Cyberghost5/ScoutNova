@@ -13,17 +13,17 @@ $query = "
   FROM chats c
   JOIN users u1 ON c.user1_id = u1.id
   JOIN users u2 ON c.user2_id = u2.id
-  WHERE (c.id = ?) OR  (c.uuid = ?)
+  WHERE (c.uuid = ?)
   ORDER BY c.id ASC
 ";
 
 $result = $conn->prepare($query);
-$result->execute([$chat_id, $chat_id]);
+$result->execute([$chat_id]);
 $row = $result->fetch(PDO::FETCH_ASSOC);
 
 if (!$row) {
   $_SESSION['error'] = 'Somethong is wrong!';
-  header('location: messages');
+  header('location: ../messages');
   exit();
 }
 

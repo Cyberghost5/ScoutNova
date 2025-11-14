@@ -44,7 +44,7 @@ if($user['profile_set'] == 0){
           // Suppose the logged-in user ID is 1 (Alexander for now)
           $sql = "
           SELECT 
-            c.id AS chat_id,
+            c.id AS chat_id, c.uuid,
             IF(c.user1_id = ?, u2.firstname, u1.firstname) AS firstname,
             IF(c.user1_id = ?, u2.lastname, u1.lastname) AS lastname,
             IF(c.user1_id = ?, u2.type, u1.type) AS usertype2,
@@ -58,7 +58,7 @@ if($user['profile_set'] == 0){
           LEFT JOIN players p1 ON u1.id = p1.user_id
           LEFT JOIN players p2 ON u2.id = p2.user_id
           JOIN (
-            SELECT chat_id, message, timestamp
+            SELECT chat_id, message, timestamp, uuid
             FROM messages
             WHERE id IN (
               SELECT MAX(id) FROM messages GROUP BY chat_id
@@ -320,7 +320,7 @@ if($user['profile_set'] == 0){
                               <?php endif; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="message?chat_id=<?= $chat['chat_id'] ?>"><i class="mdi mdi-chat-outline"></i> View</a>
+                              <a class="btn btn-sm btn-outline-success" href="message/<?= $chat['uuid'] ?>"><i class="mdi mdi-chat-outline"></i> View</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>
@@ -594,7 +594,7 @@ if($user['profile_set'] == 0){
                               <?php endif; ?>
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-outline-success" href="message?chat_id=<?= $chat['chat_id'] ?>"><i class="mdi mdi-chat-outline"></i> Message</a>
+                              <a class="btn btn-sm btn-outline-success" href="message/<?= $chat['chat_id'] ?>"><i class="mdi mdi-chat-outline"></i> Message</a>
                             </td>
                           </tr>
                           <?php endforeach; ?>

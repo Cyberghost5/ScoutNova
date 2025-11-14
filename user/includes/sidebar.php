@@ -45,6 +45,12 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/top-players">
+          <i class="mdi mdi-trophy-variant-outline menu-icon"></i>
+          <span class="menu-title">Top Players</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/discover">
           <i class="mdi mdi-account-search menu-icon"></i>
           <span class="menu-title">Discover Players</span>
@@ -87,7 +93,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/#profile" data-toggle="modal">
+        <a class="nav-link" href="#profile" data-toggle="modal">
           <i class="mdi mdi-settings menu-icon"></i>
           <span class="menu-title">Settings</span>
         </a>
@@ -108,6 +114,12 @@
         </a>
       </li>
       <?php endif; ?>
+      <li class="nav-item">
+        <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/top-players">
+          <i class="mdi mdi-trophy-variant-outline menu-icon"></i>
+          <span class="menu-title">Top Players</span>
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="<?php echo $settings['site_url']; ?>user/discover">
           <i class="mdi mdi-account-search menu-icon"></i>

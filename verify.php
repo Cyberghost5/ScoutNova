@@ -73,7 +73,7 @@ $pdo->close();
 					$_SESSION['username'] = $username;
 				}
 				else{
-					$_SESSION['error'] = 'Account not activated. Check your email for activation link.';
+					$_SESSION['error'] = 'Account not activated. Check your email for activation link. If not found, click <a href="resend?email='.$username.'">here</a> to resend.';
 					$_SESSION['username'] = $username;
 					// echo $_SESSION['error'] .'jeek';
 					// var_dump($_SESSION);
